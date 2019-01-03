@@ -2,45 +2,77 @@ import Response, { RESPONSES, RESPONSE_TYPE } from './response';
 import { constants, errors } from './config';
 import { addressUtils, apiUtils, web3Utils } from './scripts/utils';
 
-const loadWeb3 = async function () {
-    this.web3 = new Web3 (this.provider);
-    if (this.provider.enable) {
-        await this.provider.enable();
+let state;
+
+class State {
+    constructor () {
+        this.apiKey = null;
+        this.AWS = null;
+        this.activeNetwork = null;
+        this.loaded = false;
+        this.provider = null;
+        this.web3 = null;
     }
-}
+};
 
 class MintableCreate {
 
     constructor (apiKey, provider ) {
         if (!provider) {
-            provider = window.ethereum || window.web3;
+            provider = window.ethereum || (window.web3 && window.web3.givenProvider) || (window.web3 && window.web3.currentProvider) ;
             if (!provider) {
                 throw new Error(errors.INVALID_PROVIDER);
             }
         }
-        this.provider = provider;
-        this.apiKey = apiKey;
-        this.loadClass();
+
+        state = new State();
+        state.provider = provider;
+        state.apiKey = apiKey;
     }
 
-    loaded= false;
-    web3 = null;
-    AWS = null;
-    activeNetwork = null;
-
-    async loadClass () {
-        await web3Utils.loadWeb3.bind(this)();
-        await apiUtils.loadAWS.bind(this)();
-        await apiUtils.validateApiKey(this.AWS, this.apiKey);
-        this.loaded = true;
+    get apiKey () {
+        return state.apiKey;
     }
 
-    
+    get activeNetwork () {
+        return state.activeNetwork;
+    }
+
+    get loaded () {
+        return state.loaded;
+    }
+
+    get web3 () {
+        return state.web3;
+    }
+
+    requireLoadedSDK () {
+        if (!this.loaded) {
+            throw new Error(errors.SDK_NOT_LOADED);
+        }
+    }
+
+    async loadSDK () {
+        if (state.loaded) {
+            return state.loaded;
+        }
+        if (state.loading) {
+            throw new Error(errors.SDK_LOADING);
+        }
+        state.loading = true;
+        await web3Utils.loadWeb3.bind(state)();
+        await apiUtils.loadAWS.bind(state)();
+        await apiUtils.validateApiKey(state.AWS, state.apiKey);
+        state.loaded = true;
+        return state.loadWeb3;
+    }
 
     createERC721Mintable (from) {
+        this.requireLoadedSDK();
     }
 
     create (from=constants.NULL_ADDRESS_HEX, uri=constants.NULL_STRING) {
+        this.requireLoadedSDK();
         if ( !addressUtils.exists(from) ) {
             return new Response(RESPONSE_TYPE[1], errors.INVALID_SENDER );
         }
