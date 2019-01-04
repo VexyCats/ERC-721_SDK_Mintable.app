@@ -6,7 +6,6 @@ const apiUtils = {
         this.AWS.config.update({ region: constants.AWS_REGION });
     },
     validateApiKey: function (aws, apiKey) {
-
     }
 }
 

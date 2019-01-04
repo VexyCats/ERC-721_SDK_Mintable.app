@@ -7,7 +7,7 @@ const web3Utils = {
         if (this.provider.enable) {
             await this.provider.enable();
         }
-        this.activeNetwork = await this.web3.eth.net.getId()
+        this.activeNetwork = await this.web3.eth.net.getId();
         return true;
     }
 }
