@@ -1,4 +1,4 @@
-import { constants } from '../../config';
+import { constants } from '../config';
 
 const addressUtils = {
     exists: function (address) {

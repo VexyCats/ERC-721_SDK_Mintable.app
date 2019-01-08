@@ -1,6 +1,6 @@
 import Response, { RESPONSES, RESPONSE_TYPE } from './response';
 import { constants, errors } from './config';
-import { addressUtils, apiUtils, web3Utils } from './scripts/utils';
+import { addressUtils, apiUtils, web3Utils } from './utils';
 
 let state;
 
