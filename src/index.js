@@ -25,6 +25,10 @@ class MintableCreate {
             }
         }
 
+        if (!apiKey) {
+            throw new Error(errors.INVALID_API);
+        }
+
         state = new State();
         state.provider = provider;
         state.apiKey = apiKey;
@@ -62,7 +66,7 @@ class MintableCreate {
         state.loading = true;
         await web3Utils.loadWeb3.bind(state)();
         await apiUtils.loadAWS.bind(state)();
-        await apiUtils.validateApiKey(state.AWS, state.apiKey);
+        await apiUtils.validateApiKey(state, state.apiKey);
         state.loaded = true;
         return state.loadWeb3;
     }
