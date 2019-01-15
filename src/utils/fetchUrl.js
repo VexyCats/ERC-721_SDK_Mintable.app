@@ -5,30 +5,27 @@ const Methods = {
     put: 'PUT'
 };
 
-const fetchUrl = async (url, method='get') => {
-    method = Methods(method.toLowerCase());
+const fetchUrl = async (url, method='get', headers = {}, nocors=false) => {
+    method = Methods[method.toLowerCase()];
+    Object.assign(headers, {
+      'content-type': 'application/json'
+    });
     return new Promise(async (resolve, reject) => {
         const data = await fetch(url, {
-          method: method,
-          headers: {
-            "content-type": "application/json"
-          },
-          mode: "cors"
+          method,
+          headers,
+          cache: 'no-cache',
+          mode: nocors ? 'no-cors' : 'cors'
         })
           .then(response => {
-            console.log(response);
             return response.json();
           })
           .then(data => {
-              console.log(data)
             return data;
           })
           .catch(error => {
-              console.error(error)
             return reject(error);
           });
-        resolve(data);
-
     });
   };
   export default fetchUrl;

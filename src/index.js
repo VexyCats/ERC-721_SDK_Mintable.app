@@ -42,6 +42,10 @@ class MintableCreate {
         return state.activeNetwork;
     }
 
+    get errors () {
+        return errors;
+    }
+
     get loaded () {
         return state.loaded;
     }

@@ -1,4 +1,5 @@
 import { apiFunctions, apiUrls, constants } from '../config';
+import fetchUrl from './fetchUrl';
 
 const apiUtils = {
     loadAWS: function () {
@@ -17,56 +18,17 @@ const apiUtils = {
         return new state.AWS.Lambda();
     },
     validateApiKey: async function (state, apiKey) {
-        console.log(state)
-        const Gateway = this.getApiGateway(state);
-        const lambda = this.createLamdaInstance(state);
-        console.log(lambda);
-        var pullParams = {
-            FunctionName : apiFunctions.apiAccess,
-            InvocationType : 'RequestResponse',
-            LogType : 'None'
-        };
 
         try {
-            fetch(apiUrls.apiAccess)
-            .then(function(response) {
-                console.log(response)
-                return response.json();
-            })
-            .then(function(myJson) {
-                console.log(JSON.stringify(myJson));
+            let result = fetchUrl(apiUrls.apiAccess, 'get', {
+                authorizationToken: apiKey
             });
-
-            // lambda.invoke(pullParams, function(error, data) {
-            //     if (error) {
-            //         console.log(error);
-            //       prompt(error);
-            //     } else {
-            //         console.log(data);
-            //         pullResults = JSON.parse(data.Payload);
-            //     }
-            //   });
-            // const request = Gateway.makeRequest(
-            //     'Mintable-sdk',
-            //     {
-            //         method: 'get'
-            //     }
-            // );
-            // console.log(request);
-
+            result = await result;
+            state.abis[constants.GENERATOR_ABI] = result.body;
         } catch (e) {
-            console.error(e);
+            throw new Error(e.message || e);
         }
-        // fetch('http://example.com/movies.json')
-        // .then(function(response) {
-        //     return response.json();
-        // })
-        // .then(function(myJson) {
-        //     console.log(JSON.stringify(myJson));
-        // });
         state.ApiGateway = Gateway;
-        console.log(this)
-        throw new Error('No Api');
     }
 }
 
