@@ -21,7 +21,10 @@ const fetchUrl = async (url, method='get', headers = {}, nocors=false) => {
             return response.json();
           })
           .then(data => {
-            return data;
+            if (data.errorMessage || data.error) {
+              throw (data.errorMessage || data.error);
+            }
+            return resolve(data);
           })
           .catch(error => {
             return reject(error);

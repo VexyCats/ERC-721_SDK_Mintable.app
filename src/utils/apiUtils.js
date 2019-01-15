@@ -28,7 +28,6 @@ const apiUtils = {
         } catch (e) {
             throw new Error(e.message || e);
         }
-        state.ApiGateway = Gateway;
     }
 }
 
