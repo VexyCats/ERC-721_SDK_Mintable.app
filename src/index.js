@@ -1,5 +1,5 @@
 import Response, { RESPONSES, RESPONSE_TYPE } from './response';
-import { constants, errors } from './config';
+import { addresses, constants, errors } from './config';
 import { addressUtils, apiUtils, web3Utils } from './utils';
 
 let state;
@@ -18,7 +18,7 @@ class State {
 
 class MintableCreate {
 
-    constructor (apiKey, provider ) {
+    constructor (apiKey, provider) {
         if (!provider) {
             provider = window.ethereum || (window.web3 && window.web3.givenProvider) || (window.web3 && window.web3.currentProvider) ;
             if (!provider) {
@@ -80,18 +80,25 @@ class MintableCreate {
         }
     }
 
-    createERC721Mintable (from) {
+    async fetchTotalCreatedContracts () {
+        this.requireLoadedSDK();
+        const abi = state.abis[constants.GENERATOR_ABI];
+        const address = addresses[this.activeNetwork];
+        return await web3Utils.fetchGeneratedCount.bind(state)(abi, address);
+    }
+
+    async createERC721Mintable (from) {
         this.requireLoadedSDK();
     }
 
-    create (from=constants.NULL_ADDRESS_HEX, uri=constants.NULL_STRING) {
+    async create (from=constants.NULL_ADDRESS_HEX, uri=constants.NULL_STRING) {
         this.requireLoadedSDK();
         if ( !addressUtils.exists(from) ) {
             return new Response(RESPONSE_TYPE[1], errors.INVALID_SENDER );
         }
 
     }
-
+    // `create()`
 }
 
 export default MintableCreate;

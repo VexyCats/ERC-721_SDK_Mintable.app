@@ -9,6 +9,10 @@ const web3Utils = {
         }
         this.activeNetwork = await this.web3.eth.net.getId();
         return true;
+    },
+    fetchGeneratedCount: async function (abi={}, address) {
+        const generator = await new this.web3.eth.Contract(abi, address);
+        return (await generator.methods.viewTotal().call()).valueOf();
     }
 }
 
