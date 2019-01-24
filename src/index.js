@@ -61,7 +61,7 @@ class MintableCreate {
         }
     }
 
-    async loadSDK () {
+    async init () {
         try {
             if (state.loaded) {
                 return state.loaded;

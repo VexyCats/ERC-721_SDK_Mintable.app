@@ -9,8 +9,7 @@ Use the SDK to create anything as a ERC-721 easily. No smart contracts needed.
 import MintableCreate from 'mintable-create-sdk';
 ...
 const mintable = new MintableCreate();
-await mintable.loadSDK();
-  
+await mintable.init();
 
 console.log(mintable.loaded);
 
