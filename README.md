@@ -15,4 +15,7 @@ await mintable.loadSDK();
 console.log(mintable.loaded);
 
 //true
+
+mintable.create({MyERC721Details})
+//returns a web3 call that the user can approve and send
 ```
