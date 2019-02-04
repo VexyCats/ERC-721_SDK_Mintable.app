@@ -6,7 +6,7 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-scripts": "2.1.3",
-    "mintable-create-sdk": "file: ../Users/Spader/coding/mintable.app/MintableCreateNPM/mintable-create-sdk/",
+    "mintable-create-sdk": "file: ..C:/Users/Spader/coding/mintable.app/MintableCreateNPM/mintable-create-sdk/",
     "mtbsdk": "git+https://github.com/VexyCats/ERC-721_SDK_Mintable.app.git#initial-progress"
   },
   "scripts": {
