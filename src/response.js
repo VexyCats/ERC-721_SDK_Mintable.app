@@ -18,10 +18,11 @@ const callResponse = function (type, content) {
     } 
 
     const response = {
-        status: 200
+        status: RESPONSES[0]
     };
     switch (type) {
         case RESPONSES[1]:
+            response.status = RESPONSES[1];
             response.error = content;
             break;
         default:

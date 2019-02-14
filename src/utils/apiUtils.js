@@ -18,13 +18,25 @@ const apiUtils = {
         return new state.AWS.Lambda();
     },
     validateApiKey: async function (state, apiKey) {
-
         try {
             let result = fetchUrl(apiUrls.apiAccess, 'get', {
                 authorizationToken: apiKey
             });
             result = await result;
             state.abis[constants.GENERATOR_ABI] = result.body;
+        } catch (e) {
+            throw new Error(e.message || e);
+        }
+    },
+    generateSignedMessage: async function (requestObject) {
+        try {
+            let result = fetchUrl(apiUrls.generateCall, 'post', {
+                    authorizationToken: apiKey
+                },
+                requestObject
+            );
+            result = await result;
+            return result;
         } catch (e) {
             throw new Error(e.message || e);
         }
