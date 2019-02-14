@@ -27,7 +27,7 @@ class MintableCreate {
         }
 
         if (!apiKey) {
-            throw new Error(errors.INVALID_API);
+            throw new Error(errors.INVALID_API_KEY);
         }
 
         state = new State();
