@@ -87,18 +87,25 @@ class MintableCreate {
         return await web3Utils.fetchGeneratedCount.bind(state)(abi, address);
     }
 
-    async createERC721Mintable (from) {
+    async createERC721Mintable ({ from=constants.NULL_ADDRESS_HEX }) {
         this.requireLoadedSDK();
     }
 
-    async create (from=constants.NULL_ADDRESS_HEX, uri=constants.NULL_STRING) {
+    async createERC721 ({ from=constants.NULL_ADDRESS_HEX, uri=constants.NULL_STRING, metadata=[], usesApi=false }) {
         this.requireLoadedSDK();
+        usesApi = usesApi || metadata.length > 3;
+
         if ( !addressUtils.exists(from) ) {
             return new Response(RESPONSE_TYPE[1], errors.INVALID_SENDER );
         }
 
     }
-    // `create()`
+
+    async create ({ from=constants.NULL_ADDRESS_HEX, uri=constants.NULL_STRING, metadata=[], usesApi=false }) {
+        usesApi = usesApi || metadata.length > 3;
+        const generatedMessage = await apiUtils.generateSignedMessage()
+
+    }
 }
 
 export default MintableCreate;
