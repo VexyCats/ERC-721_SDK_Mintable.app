@@ -87,11 +87,11 @@ class MintableCreate {
         return await web3Utils.fetchGeneratedCount.bind(state)(abi, address);
     }
 
-    async createERC721Mintable ({ from=constants.NULL_ADDRESS_HEX }) {
+    async createERC721Mintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING }) {
         this.requireLoadedSDK();
     }
 
-    async createERC721 ({ from=constants.NULL_ADDRESS_HEX, uri=constants.NULL_STRING, metadata=[], usesApi=false }) {
+    async createERC721 ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata=[], usesApi=false }) {
         this.requireLoadedSDK();
         usesApi = usesApi || metadata.length > 3;
 
@@ -101,7 +101,7 @@ class MintableCreate {
 
     }
 
-    async create ({ from=constants.NULL_ADDRESS_HEX, uri=constants.NULL_STRING, metadata=[], usesApi=false }) {
+    async create ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata=[], usesApi=false }) {
         usesApi = usesApi || metadata.length > 3;
         const generatedMessage = await apiUtils.generateSignedMessage()
 
