@@ -87,23 +87,26 @@ class MintableCreate {
         return await web3Utils.fetchGeneratedCount.bind(state)(abi, address);
     }
 
-    async createERC721Mintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING }) {
+    async createERC721Mintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING }={}) {
         this.requireLoadedSDK();
     }
 
-    async createERC721 ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata=[], usesApi=false }) {
+    async createERC721 ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata=[], usesApi=false }={}) {
         this.requireLoadedSDK();
-        usesApi = usesApi || metadata.length > 3;
 
         if ( !addressUtils.exists(from) ) {
             return new Response(RESPONSE_TYPE[1], errors.INVALID_SENDER );
         }
-
+        usesApi = usesApi || metadata.length > 3;
+        const tx = {
+            from,
+            name
+        }
+        const generatedMessage = await apiUtils.generateSignedMessage(state);
     }
 
-    async create ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata=[], usesApi=false }) {
+    async create ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata=[], usesApi=false }={}) {
         usesApi = usesApi || metadata.length > 3;
-        const generatedMessage = await apiUtils.generateSignedMessage()
 
     }
 }

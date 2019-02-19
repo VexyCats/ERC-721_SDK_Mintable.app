@@ -29,7 +29,6 @@ const callResponse = function (type, content) {
             response.result = content;
             break;
     }
-
     return response;
 }
 

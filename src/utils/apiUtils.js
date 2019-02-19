@@ -28,10 +28,10 @@ const apiUtils = {
             throw new Error(e.message || e);
         }
     },
-    generateSignedMessage: async function (requestObject) {
+    generateSignedMessage: async function (state, requestObject) {
         try {
             let result = fetchUrl(apiUrls.generateCall, 'post', {
-                    authorizationToken: apiKey
+                    authorizationToken: state.apiKey
                 },
                 requestObject
             );
