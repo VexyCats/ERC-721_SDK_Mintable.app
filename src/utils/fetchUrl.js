@@ -18,7 +18,7 @@ const fetchUrl = async (url, method='get', headers = {}, body = "{}", nocors=fal
       mode: nocors ? 'no-cors' : 'cors'
     }
     if (method !== 'GET') {
-      fetchObject.body = body
+      fetchObject.body = typeof body !== 'string' ? JSON.stringify(body) : body;
     }
     return new Promise(async (resolve, reject) => {
         const data = await fetch(url, fetchObject

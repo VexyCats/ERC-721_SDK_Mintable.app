@@ -13,6 +13,7 @@ class State {
         this.loaded = false;
         this.provider = null;
         this.web3 = null;
+        this.generatorContract = null;
     }
 };
 
@@ -61,6 +62,12 @@ class MintableCreate {
         }
     }
 
+    requireLoadedGenerator () {
+        if (!this.generatorContract) {
+            throw new Error(errors.SDK_NOT_LOADED);
+        }
+    }
+
     async init () {
         try {
             if (state.loaded) {
@@ -70,11 +77,11 @@ class MintableCreate {
                 throw new Error(errors.SDK_LOADING);
             }
             state.loading = true;
-            await web3Utils.loadWeb3.bind(state)();
             await apiUtils.loadAWS.bind(state)();
             await apiUtils.validateApiKey(state, state.apiKey);
+            await web3Utils.loadWeb3.bind(state)();
             state.loaded = true;
-            return state.loadWeb3;
+            return state.loaded;
         } catch (e) {
             throw new Error(errors[e.message || e] || (e.message || e));
         }
@@ -87,26 +94,36 @@ class MintableCreate {
         return await web3Utils.fetchGeneratedCount.bind(state)(abi, address);
     }
 
-    async createERC721Mintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING }={}) {
-        this.requireLoadedSDK();
+    async createERC721BatchMintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, isApi=false  }={}) {
+        this.requireLoadedSDK() && this.requireLoadedGenerator();
     }
 
-    async createERC721 ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata=[], usesApi=false }={}) {
-        this.requireLoadedSDK();
+    async createERC721Mintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, isApi=false  }={}) {
+        this.requireLoadedSDK() && this.loaded.requireLoadedGenerator();
+    }
 
-        if ( !addressUtils.exists(from) ) {
+    async createERC721 ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING }={}, { onData, onReceipt, onError } = {}) {
+        this.requireLoadedSDK() && this.requireLoadedGenerator();
+
+        if ( !addressUtils.exists(from) || !addressUtils.isValid(state.web3, from) ) {
             return new Response(RESPONSE_TYPE[1], errors.INVALID_SENDER );
         }
-        usesApi = usesApi || metadata.length > 3;
+        const usesApi = false;
         const tx = {
             from,
-            name
+            name,
+            symbol,
+            uri,
+            usesApi
         }
-        const generatedMessage = await apiUtils.generateSignedMessage(state);
+        const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
+        const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721', {}, name, symbol, uri);
+        web3Utils.setEventListeners(txPromise, {onData, onReceipt, onError });
+        return txPromise;
     }
 
-    async create ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata=[], usesApi=false }={}) {
-        usesApi = usesApi || metadata.length > 3;
+    async create ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata=[], isApi=false  }={}) {
+        const usesApi = isApi || metadata.length > 3;
 
     }
 }
