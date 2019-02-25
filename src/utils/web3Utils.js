@@ -27,8 +27,8 @@ const web3Utils = {
         const generator = await new this.web3.eth.Contract(abi, address);
         return (await generator.methods.viewTotal().call()).valueOf();
     },
-    methodTransaction: function (contract, method, { from, gas, gasPrice },  ...args) {
-        const txConfig = this.extractTransactionConfig({ from, gas, gasPrice});
+    methodTransaction: function (contract, method, { from, gas, gasPrice, value },  ...args) {
+        const txConfig = this.extractTransactionConfig({ from, gas, gasPrice, value});
         const tx = contract.methods[method](...args).send(txConfig);
         return tx;
     },

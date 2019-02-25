@@ -114,10 +114,12 @@ class MintableCreate {
             name,
             symbol,
             uri,
-            usesApi
+            usesApi,
+            batchMint: 0
         }
         const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
-        const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721', {}, name, symbol, uri);
+        console.log(generatedMessage);
+        const txPromise = await web3Utils.methodTransaction(state.generatorContract, 'createERC721', { from }, name, symbol, uri);
         web3Utils.setEventListeners(txPromise, {onData, onReceipt, onError });
         return txPromise;
     }
