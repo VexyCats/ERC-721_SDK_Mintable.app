@@ -45,6 +45,13 @@ const apiUtils = {
         if (!generatedMessage.timestamp || !generatedMessage.value || !generatedMessage.data || !generatedMessage.data.v || !generatedMessage.data.r || !generatedMessage.data.s) {
             throw new Error(errors.INVALID_SIGNED_MESSAGE);
         }
+    },
+    extractSignedMessagePricing: function (generatedMessage) {
+        this.requireGeneratedSignedMessage(generatedMessage);
+        return {
+            value: generatedMessage.value,
+            usdValue: generatedMessage.usdValue
+        };
     }
 }
 
