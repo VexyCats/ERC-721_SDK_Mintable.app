@@ -68,6 +68,27 @@ class MintableCreate {
         }
     }
 
+    resolveWeb3TxEvent (tx, { onTransactionHash, onChanged, onReceipt, onError }) {
+        if (!onTransactionHash && !onChanged && !onReceipt && !onError) {
+            return new Promise((resolve) => {
+                web3Utils.setEventListeners( tx, {
+                    onReceipt: (reciept => resolve(
+                        new Response(RESPONSE_TYPE[0], {
+                            message: 'Successfully created Token',
+                            reciept: reciept
+                        })
+                    )),
+                    onError: (error => resolve(
+                        new Response(RESPONSE_TYPE[1], new Error(error.message || error))
+                    ))
+                });
+            });
+        } else {
+            web3Utils.setEventListeners(tx, { onTransactionHash, onChanged, onReceipt, onError });
+            return tx;
+        }
+    }
+
     async init () {
         try {
             if (state.loaded) {
@@ -88,10 +109,14 @@ class MintableCreate {
     }
 
     async fetchTotalCreatedContracts () {
-        this.requireLoadedSDK();
-        const abi = state.abis[constants.GENERATOR_ABI];
-        const address = addresses[this.activeNetwork];
-        return await web3Utils.fetchGeneratedCount.bind(state)(abi, address);
+        try {
+            this.requireLoadedSDK();
+            const abi = state.abis[constants.GENERATOR_ABI];
+            const address = addresses[this.activeNetwork];
+            return await web3Utils.fetchGeneratedCount.bind(state)(abi, address);
+        } catch (e) {
+            return new Response(RESPONSE_TYPE[1], e.message || e );
+        }
     }
 
     async createERC721BatchMintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, isApi=false  }={}) {
@@ -102,26 +127,30 @@ class MintableCreate {
         this.requireLoadedSDK() && this.loaded.requireLoadedGenerator();
     }
 
-    async createERC721 ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING }={}, { onData, onReceipt, onError } = {}) {
-        this.requireLoadedSDK() && this.requireLoadedGenerator();
+    async createERC721 ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING }={}, { onTransactionHash, onReceipt, onError } = {}) {
+        try {
+            this.requireLoadedSDK() && this.requireLoadedGenerator();
+            from = web3Utils.resolveFrom.bind(state)(from);
 
-        if ( !addressUtils.exists(from) || !addressUtils.isValid(state.web3, from) ) {
-            return new Response(RESPONSE_TYPE[1], errors.INVALID_SENDER );
-        }
-        const usesApi = false;
-        const tx = {
+            if ( !addressUtils.exists(from) || !addressUtils.isValid(state.web3, from) ) {
+                throw new Error(errors.INVALID_SENDER);
+            }
+            const usesApi = false;
+            const tx = {
             from,
             name,
             symbol,
             uri,
             usesApi,
-            batchMint: 0
+                batchMint: 0
+            }
+            const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
+            apiUtils.requireGeneratedSignedMessage(generatedMessage);
+            const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721', { from }, name, symbol, uri);
+            return this.resolveWeb3TxEvent(txPromise, {onTransactionHash, onReceipt, onError });
+        } catch (e) {
+            return new Response(RESPONSE_TYPE[1], e.message || e );
         }
-        const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
-        console.log(generatedMessage);
-        const txPromise = await web3Utils.methodTransaction(state.generatorContract, 'createERC721', { from }, name, symbol, uri);
-        web3Utils.setEventListeners(txPromise, {onData, onReceipt, onError });
-        return txPromise;
     }
 
     async create ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata=[], isApi=false  }={}) {

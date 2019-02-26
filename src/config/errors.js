@@ -5,6 +5,7 @@ export default {
     'INVALID_CONTRACT_NAME': 'The Token name is required',
     'INVALID_CONTRACT_SYMBOL': 'The Token symbol is required',
     'INVALID_CONTRACT_URI': 'The uri field was either not provided or invalid',
+    'INVALID_SIGNED_MESSAGE': 'Signed data received is incorrect',
     'SDK_LOADING': 'Sdk already being loaded, check for loaded state',
     'SDK_NOT_LOADED': 'Sdk is not yet loaded, run loadSdk()'
 }

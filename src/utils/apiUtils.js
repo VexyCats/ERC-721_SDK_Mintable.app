@@ -1,4 +1,4 @@
-import { apiFunctions, apiUrls, constants } from '../config';
+import { apiFunctions, apiUrls, constants, errors } from '../config';
 import fetchUrl from './fetchUrl';
 
 const apiUtils = {
@@ -39,6 +39,11 @@ const apiUtils = {
             return result;
         } catch (e) {
             throw new Error(e.message || e);
+        }
+    },
+    requireGeneratedSignedMessage: function (generatedMessage) {
+        if (!generatedMessage.timestamp || !generatedMessage.value || !generatedMessage.data || !generatedMessage.data.v || !generatedMessage.data.r || !generatedMessage.data.s) {
+            throw new Error(errors.INVALID_SIGNED_MESSAGE);
         }
     }
 }

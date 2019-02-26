@@ -1,5 +1,6 @@
 import Web3 from 'web3';
 import { addresses, apiFunctions, apiUrls, constants } from '../config';
+import { addressUtils } from './';
 
 const web3Utils = {
 
@@ -9,6 +10,8 @@ const web3Utils = {
             await this.provider.enable();
         }
         this.activeNetwork = await this.web3.eth.net.getId();
+        const accounts = await this.web3.eth.getAccounts();
+        this.defaultAccount = accounts && accounts[0];
         const address = addresses[this.activeNetwork];
         if (address) {
             this.generatorContract = await new this.web3.eth.Contract(this.abis[constants.GENERATOR_ABI], address);
@@ -32,12 +35,19 @@ const web3Utils = {
         const tx = contract.methods[method](...args).send(txConfig);
         return tx;
     },
-    setEventListeners: function (tx, {onData, onChanged, onReceipt, onError}={}) {
+    resolveFrom: function (from) {
+        if (!addressUtils.exists(from)) {
+            return this.defaultAccount;
+        } else {
+            return from;
+        }
+    },
+    setEventListeners: function (tx, {onData, onChanged, onTransactionHash, onReceipt, onError}={}) {
         if (onData) {
             tx.on('data', onData);
         }
-        if (onChanged) {
-            tx.on('change', onChanged);
+        if (onChanged || onTransactionHash) {
+            tx.on('change', onChanged || onTransactionHash);
         }
         if (onReceipt) {
             tx.on('receipt', onReceipt);
