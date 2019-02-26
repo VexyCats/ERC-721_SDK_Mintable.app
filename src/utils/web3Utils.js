@@ -46,8 +46,11 @@ const web3Utils = {
         if (onData) {
             tx.on('data', onData);
         }
-        if (onChanged || onTransactionHash) {
-            tx.on('change', onChanged || onTransactionHash);
+        if (onTransactionHash) {
+            tx.on('tranctionHash', onTransactionHash);
+        }
+        if (onChanged) {
+            tx.on('change', onChanged);
         }
         if (onReceipt) {
             tx.on('receipt', onReceipt);

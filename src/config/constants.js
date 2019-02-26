@@ -1,4 +1,5 @@
 export default {
+    API_URL: 'https://api.mintable.app',
     AWS_REGION: 'us-east-2',
     AWS_APIGATEWAY_VERSION: '2015-07-09',
     AWS_COGNITO_VERSION: '2016-04-18',
