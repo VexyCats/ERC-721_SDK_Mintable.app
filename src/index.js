@@ -1,5 +1,5 @@
 import Response, { RESPONSES, RESPONSE_TYPE } from './response';
-import { addresses, constants, errors } from './config';
+import { addresses, batchMints, constants, errors } from './config';
 import { addressUtils, apiUtils, web3Utils } from './utils';
 
 let state;
@@ -68,6 +68,12 @@ class MintableCreate {
         }
     }
 
+    requireValidBatchMint (batchMint) {
+        if (!batchMints.includes(String(batchMint)) || Number(batchMint) === 0) {
+            throw new Error(errors.SDK_NOT_LOADED);
+        }
+    }
+
     resolveWeb3TxEvent (tx, { onTransactionHash, onChanged, onReceipt, onError }) {
         if (!onTransactionHash && !onChanged && !onReceipt && !onError) {
             return new Promise((resolve) => {
@@ -117,6 +123,60 @@ class MintableCreate {
         } catch (e) {
             return new Response(RESPONSE_TYPE[1], e.message || e );
         }
+    }
+
+    async priceCreateERC721MetadataBatchMintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], isApi=false, batchMint=0  }={}, { onTransactionHash, onReceipt, onError } = {}) {
+        // try {
+        //     batchMint = Number(batchMint);
+        //     this.requireLoadedSDK() && this.requireLoadedGenerator() && this.requireValidBatchMint(batchMint);
+        //     from = web3Utils.resolveFrom.bind(state)(from);
+        //     if ( !addressUtils.exists(from) || !addressUtils.isValid(state.web3, from) ) {
+        //         throw new Error(errors.INVALID_SENDER);
+        //     }
+        //     const usesApi = isApi || (metadata && metadata.length > 0) || uri.includes(constants.API_URL);
+        //     const tx = {
+        //         from,
+        //         name,
+        //         symbol,
+        //         uri,
+        //         metadata,
+        //         usesApi,
+        //         batchMint
+        //     }
+        //     const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
+        //     return new Response(RESPONSE_TYPE[0], 
+        //         apiUtils.extractSignedMessagePricing(generatedMessage)
+        //     );
+        // } catch (e) {
+        //     return new Response(RESPONSE_TYPE[1], e.message || e );
+        // }
+    }
+
+    async priceCreateERC721BatchMintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], isApi=false, batchMint=0  }={}, { onTransactionHash, onReceipt, onError } = {}) {
+        // try {
+        //     batchMint = Number(batchMint);
+        //     this.requireLoadedSDK() && this.requireLoadedGenerator() && this.requireValidBatchMint(batchMint);
+        //     from = web3Utils.resolveFrom.bind(state)(from);
+        //     if ( !addressUtils.exists(from) || !addressUtils.isValid(state.web3, from) ) {
+        //         throw new Error(errors.INVALID_SENDER);
+        //     }
+        //     const usesApi = isApi || (metadata && metadata.length > 0) || uri.includes(constants.API_URL);
+        //     const tx = {
+        //         from,
+        //         name,
+        //         symbol,
+        //         uri,
+        //         metadata,
+        //         usesApi,
+        //         batchMint
+        //     }
+        //     const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
+        //     return new Response(RESPONSE_TYPE[0], 
+        //         apiUtils.extractSignedMessagePricing(generatedMessage)
+        //     );
+        // } catch (e) {
+        //     return new Response(RESPONSE_TYPE[1], e.message || e );
+        // }
     }
 
     async priceCreateERC721Metadata ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], isApi=false  }={}) {
@@ -177,11 +237,63 @@ class MintableCreate {
     }
 
     async createERC721MetadataBatchMintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, isApi=false  }={}) {
-        this.requireLoadedSDK() && this.requireLoadedGenerator();
+        try {
+            batchMint = Number(batchMint);
+            this.requireLoadedSDK() && this.requireLoadedGenerator() && this.requireValidBatchMint(batchMint);
+            from = web3Utils.resolveFrom.bind(state)(from);
+            if ( !addressUtils.exists(from) || !addressUtils.isValid(state.web3, from) ) {
+                throw new Error(errors.INVALID_SENDER);
+            }
+            metadata = metadata.length > 3 ? metadata.slice(0,3) : metadata;
+            if (metadata.length < 3) {
+                metadata = metadata.concat(Array(3-metadata.length).fill(''));
+            }
+            const usesApi = isApi || (metadata && metadata.length > 0) || uri.includes(constants.API_URL);
+            const tx = {
+                from,
+                name,
+                symbol,
+                uri,
+                metadata,
+                usesApi,
+                batchMint: 0
+            }
+            metadata = metadata.map(data => String(data));
+            const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
+            apiUtils.requireGeneratedSignedMessage(generatedMessage);
+            const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721Metadata', { from }, name, symbol, uri, ...metadata);
+            return this.resolveWeb3TxEvent(txPromise, {onTransactionHash, onReceipt, onError });
+        } catch (e) {
+            return new Response(RESPONSE_TYPE[1], e.message || e );
+        }
     }
 
-    async createERC721BatchMintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, isApi=false  }={}) {
-        this.requireLoadedSDK() && this.requireLoadedGenerator();
+    async createERC721BatchMintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], isApi=false, batchMint=0  }={}, { onTransactionHash, onReceipt, onError } = {}) {
+        // try {
+        //     batchMint = Number(batchMint);
+        //     this.requireLoadedSDK() && this.requireLoadedGenerator() && this.requireValidBatchMint(batchMint);
+        //     from = web3Utils.resolveFrom.bind(state)(from);
+        //     if ( !addressUtils.exists(from) || !addressUtils.isValid(state.web3, from) ) {
+        //         throw new Error(errors.INVALID_SENDER);
+        //     }
+        //     const usesApi = isApi || (metadata && metadata.length > 0) || uri.includes(constants.API_URL);
+        //     const tx = {
+        //         from,
+        //         name,
+        //         symbol,
+        //         uri,
+        //         metadata,
+        //         usesApi,
+        //         batchMint
+        //     }
+        //     metadata = metadata.map(data => String(data));
+        //     const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
+        //     apiUtils.requireGeneratedSignedMessage(generatedMessage);
+        //     const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721Metadata', { from }, name, symbol, uri);
+        //     return this.resolveWeb3TxEvent(txPromise, {onTransactionHash, onReceipt, onError });
+        // } catch (e) {
+        //     return new Response(RESPONSE_TYPE[1], e.message || e );
+        // }
     }
 
     async createERC721Metadata ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], isApi=false  }={},  { onTransactionHash, onReceipt, onError } = {}) {
