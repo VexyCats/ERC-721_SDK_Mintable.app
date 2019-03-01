@@ -26,6 +26,11 @@ const web3Utils = {
         (args.value) ? txConfig.value = args.value : '';
         return txConfig;
     },
+    parseEtherValue: function (value, inbound=false) {
+        return inbound ?
+            value / constants.ETHER :
+            value * constants.ETHER;
+    },
     fetchGeneratedCount: async function (abi={}, address) {
         const generator = await new this.web3.eth.Contract(abi, address);
         return (await generator.methods.viewTotal().call()).valueOf();
