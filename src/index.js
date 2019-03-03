@@ -261,7 +261,7 @@ class MintableCreate {
         //     metadata = metadata.map(data => String(data));
         //     const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
         //     apiUtils.requireGeneratedSignedMessage(generatedMessage);
-        //     const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721Metadata', { from, value: web3Utils.parseEtherValue(generatedMessage.value) }, name, symbol, uri, ...metadata);
+        //     const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721Metadata', { from, value: generatedMessage.value }, name, symbol, uri, ...metadata);
         //     return this.resolveWeb3TxEvent(txPromise, {onTransactionHash, onReceipt, onError });
         // } catch (e) {
         //     return new Response(RESPONSE_TYPE[1], e.message || e );
@@ -289,7 +289,7 @@ class MintableCreate {
         //     metadata = metadata.map(data => String(data));
         //     const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
         //     apiUtils.requireGeneratedSignedMessage(generatedMessage);
-        //     const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721Metadata', { from, value: web3Utils.parseEtherValue(generatedMessage.value) }, name, symbol, uri);
+        //     const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721Metadata', { from, value: generatedMessage.value }, name, symbol, uri);
         //     return this.resolveWeb3TxEvent(txPromise, {onTransactionHash, onReceipt, onError });
         // } catch (e) {
         //     return new Response(RESPONSE_TYPE[1], e.message || e );
@@ -320,7 +320,7 @@ class MintableCreate {
             metadata = metadata.map(data => String(data));
             const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
             apiUtils.requireGeneratedSignedMessage(generatedMessage);
-            const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721Metadata', { from, value: web3Utils.parseEtherValue(generatedMessage.value) }, name, symbol, uri, ...metadata);
+            const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721Metadata', { from, value: generatedMessage.value }, name, symbol, uri, ...metadata);
             return this.resolveWeb3TxEvent(txPromise, {onTransactionHash, onReceipt, onError });
         } catch (e) {
             return new Response(RESPONSE_TYPE[1], e.message || e );
@@ -347,7 +347,7 @@ class MintableCreate {
             }
             const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
             apiUtils.requireGeneratedSignedMessage(generatedMessage);
-            const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721', { from, value: web3Utils.parseEtherValue(generatedMessage.value) }, name, symbol, uri);
+            const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721', { from, value: generatedMessage.value }, name, symbol, uri);
             return this.resolveWeb3TxEvent(txPromise, {onTransactionHash, onReceipt, onError });
         } catch (e) {
             return new Response(RESPONSE_TYPE[1], e.message || e );

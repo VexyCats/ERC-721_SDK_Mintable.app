@@ -1,5 +1,6 @@
 import { apiFunctions, apiUrls, constants, errors } from '../config';
 import fetchUrl from './fetchUrl';
+import web3Utils from './web3Utils';
 
 const apiUtils = {
     loadAWS: function () {
@@ -49,7 +50,7 @@ const apiUtils = {
     extractSignedMessagePricing: function (generatedMessage) {
         this.requireGeneratedSignedMessage(generatedMessage);
         return {
-            value: generatedMessage.value,
+            value: web3Utils.parseEtherValue(generatedMessage.value, true),
             usdValue: generatedMessage.usdValue
         };
     }
