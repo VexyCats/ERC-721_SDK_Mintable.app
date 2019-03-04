@@ -347,7 +347,7 @@ class MintableCreate {
             }
             const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
             apiUtils.requireGeneratedSignedMessage(generatedMessage);
-            const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721', { from, value: generatedMessage.value }, name, symbol, uri);
+            const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721', { from, value: generatedMessage.value }, name, symbol, uri, fee, generatedMessage.timestamp, usesApi, generatedMessage.data.signature);
             return this.resolveWeb3TxEvent(txPromise, {onTransactionHash, onReceipt, onError });
         } catch (e) {
             return new Response(RESPONSE_TYPE[1], e.message || e );
