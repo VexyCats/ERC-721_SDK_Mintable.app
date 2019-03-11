@@ -36,12 +36,16 @@ class MintableCreate {
         state.apiKey = apiKey;
     }
 
+    get activeNetwork () {
+        return state.activeNetwork;
+    }
+
     get apiKey () {
         return state.apiKey;
     }
 
-    get activeNetwork () {
-        return state.activeNetwork;
+    get deployerContract () {
+        return state.generatorContract;
     }
 
     get errors () {
