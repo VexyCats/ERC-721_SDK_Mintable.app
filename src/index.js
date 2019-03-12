@@ -129,7 +129,7 @@ class MintableCreate {
         }
     }
 
-    async priceCreateERC721MetadataBatchMintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], isApi=false, batchMint=0  }={}, { onTransactionHash, onReceipt, onError } = {}) {
+    async priceCreateERC721MetadataBatchMintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], useApi=false, batchMint=0  }={}, { onTransactionHash, onReceipt, onError } = {}) {
         // try {
         //     batchMint = Number(batchMint);
         //     this.requireLoadedSDK() && this.requireLoadedGenerator() && this.requireValidBatchMint(batchMint);
@@ -137,7 +137,7 @@ class MintableCreate {
         //     if ( !addressUtils.exists(from) || !addressUtils.isValid(state.web3, from) ) {
         //         throw new Error(errors.INVALID_SENDER);
         //     }
-        //     const usesApi = isApi || (metadata && metadata.length > 0) || uri.includes(constants.API_URL);
+        //     const usesApi = useApi || (metadata && metadata.length > 0) || uri.includes(constants.API_URL);
         //     const tx = {
         //         from,
         //         name,
@@ -156,7 +156,7 @@ class MintableCreate {
         // }
     }
 
-    async priceCreateERC721BatchMintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], isApi=false, batchMint=0  }={}, { onTransactionHash, onReceipt, onError } = {}) {
+    async priceCreateERC721BatchMintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], useApi=false, batchMint=0  }={}, { onTransactionHash, onReceipt, onError } = {}) {
         // try {
         //     batchMint = Number(batchMint);
         //     this.requireLoadedSDK() && this.requireLoadedGenerator() && this.requireValidBatchMint(batchMint);
@@ -164,7 +164,7 @@ class MintableCreate {
         //     if ( !addressUtils.exists(from) || !addressUtils.isValid(state.web3, from) ) {
         //         throw new Error(errors.INVALID_SENDER);
         //     }
-        //     const usesApi = isApi || (metadata && metadata.length > 0) || uri.includes(constants.API_URL);
+        //     const usesApi = useApi || (metadata && metadata.length > 0) || uri.includes(constants.API_URL);
         //     const tx = {
         //         from,
         //         name,
@@ -183,7 +183,7 @@ class MintableCreate {
         // }
     }
 
-    async priceCreateERC721Metadata ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], isApi=false  }={}) {
+    async priceCreateERC721Metadata ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], useApi=false  }={}) {
         try {
             this.requireLoadedSDK() && this.requireLoadedGenerator();
             from = web3Utils.resolveFrom.bind(state)(from);
@@ -194,7 +194,7 @@ class MintableCreate {
             if (metadata.length < 3) {
                 metadata = metadata.concat(Array(3-metadata.length).fill(''));
             }
-            const usesApi = isApi || (metadata && metadata.length > 0) || uri.includes(constants.API_URL);
+            const usesApi = useApi || (metadata && metadata.length > 0) || uri.includes(constants.API_URL);
             const tx = {
                 from,
                 name,
@@ -213,7 +213,7 @@ class MintableCreate {
         }
     }
 
-    async priceCreateERC721 ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], isApi=false }={}, { onTransactionHash, onReceipt, onError } = {}) {
+    async priceCreateERC721 ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], useApi=false }={}, { onTransactionHash, onReceipt, onError } = {}) {
         try {
             this.requireLoadedSDK();
             from = web3Utils.resolveFrom.bind(state)(from);
@@ -221,7 +221,7 @@ class MintableCreate {
             if ( !addressUtils.exists(from) || !addressUtils.isValid(state.web3, from) ) {
                 throw new Error(errors.INVALID_SENDER);
             }
-            const usesApi = isApi || metadata && metadata.length > 0 || uri.includes(constants.API_URL);
+            const usesApi = useApi || metadata && metadata.length > 0 || uri.includes(constants.API_URL);
             const tx = {
                 from,
                 name,
@@ -240,7 +240,7 @@ class MintableCreate {
         }
     }
 
-    async createERC721MetadataBatchMintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, isApi=false  }={}) {
+    async createERC721MetadataBatchMintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, useApi=false  }={}) {
         // try {
         //     batchMint = Number(batchMint);
         //     this.requireLoadedSDK() && this.requireLoadedGenerator() && this.requireValidBatchMint(batchMint);
@@ -252,7 +252,7 @@ class MintableCreate {
         //     if (metadata.length < 3) {
         //         metadata = metadata.concat(Array(3-metadata.length).fill(''));
         //     }
-        //     const usesApi = isApi || (metadata && metadata.length > 0) || uri.includes(constants.API_URL);
+        //     const usesApi = useApi || (metadata && metadata.length > 0) || uri.includes(constants.API_URL);
         //     const tx = {
         //         from,
         //         name,
@@ -272,7 +272,7 @@ class MintableCreate {
         // }
     }
 
-    async createERC721BatchMintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], isApi=false, batchMint=0  }={}, { onTransactionHash, onReceipt, onError } = {}) {
+    async createERC721BatchMintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], useApi=false, batchMint=0  }={}, { onTransactionHash, onReceipt, onError } = {}) {
         // try {
         //     batchMint = Number(batchMint);
         //     this.requireLoadedSDK() && this.requireLoadedGenerator() && this.requireValidBatchMint(batchMint);
@@ -280,7 +280,7 @@ class MintableCreate {
         //     if ( !addressUtils.exists(from) || !addressUtils.isValid(state.web3, from) ) {
         //         throw new Error(errors.INVALID_SENDER);
         //     }
-        //     const usesApi = isApi || (metadata && metadata.length > 0) || uri.includes(constants.API_URL);
+        //     const usesApi = useApi || (metadata && metadata.length > 0) || uri.includes(constants.API_URL);
         //     const tx = {
         //         from,
         //         name,
@@ -300,7 +300,7 @@ class MintableCreate {
         // }
     }
 
-    async createERC721Metadata ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], isApi=false  }={},  { onTransactionHash, onReceipt, onError } = {}) {
+    async createERC721Metadata ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [] }={},  { onTransactionHash, onReceipt, onError } = {}) {
         try {
             this.requireLoadedSDK() && this.requireLoadedGenerator();
             from = web3Utils.resolveFrom.bind(state)(from);
@@ -311,7 +311,8 @@ class MintableCreate {
             if (metadata.length < 3) {
                 metadata = metadata.concat(Array(3-metadata.length).fill(''));
             }
-            const usesApi = isApi || (metadata && metadata.length > 0) || uri.includes(constants.API_URL);
+            //TODO uri.includes(constants.API_URL);
+            const usesApi = false;
             const tx = {
                 from,
                 name,
@@ -331,7 +332,7 @@ class MintableCreate {
         }
     }
 
-    async createERC721 ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], isApi=false }={}, { onTransactionHash, onReceipt, onError } = {}) {
+    async createERC721 ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], useApi=false }={}, { onTransactionHash, onReceipt, onError } = {}) {
         try {
             this.requireLoadedSDK() && this.requireLoadedGenerator();
             from = web3Utils.resolveFrom.bind(state)(from);
@@ -339,7 +340,7 @@ class MintableCreate {
             if ( !addressUtils.exists(from) || !addressUtils.isValid(state.web3, from) ) {
                 throw new Error(errors.INVALID_SENDER);
             }
-            const usesApi = isApi || metadata && metadata.length > 0 || uri.includes(constants.API_URL);
+            const usesApi = useApi || metadata && metadata.length > 0 || uri.includes(constants.API_URL);
             const tx = {
                 from,
                 name,
@@ -358,8 +359,8 @@ class MintableCreate {
         }
     }
 
-    async create ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata=[], isApi=false  }={}) {
-        const usesApi = isApi || metadata.length > 3;
+    async create ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata=[], useApi=false  }={}) {
+        const usesApi = useApi || metadata.length > 3;
 
     }
 }
