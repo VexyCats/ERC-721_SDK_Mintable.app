@@ -48,20 +48,20 @@ const web3Utils = {
         }
     },
     setEventListeners: function (tx, {onData, onChanged, onTransactionHash, onReceipt, onError}={}) {
-        if (onData) {
-            tx.on('data', onData);
+        if (onError) {
+            tx.on('error', onError);
         }
         if (onTransactionHash) {
-            tx.on('tranctionHash', onTransactionHash);
+            tx.on('transactionHash', onTransactionHash);
+        }
+        if (onData) {
+            tx.on('data', onData);
         }
         if (onChanged) {
             tx.on('change', onChanged);
         }
         if (onReceipt) {
             tx.on('receipt', onReceipt);
-        }
-        if (onError) {
-            tx.on('error', onError);
         }
     }
 }
