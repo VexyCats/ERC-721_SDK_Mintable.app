@@ -14,12 +14,13 @@ class State {
         this.provider = null;
         this.web3 = null;
         this.generatorContract = null;
+        this.jwtFetcher = null;
     }
 };
 
 class MintableCreate {
 
-    constructor (apiKey, provider) {
+    constructor (apiKey, provider, jwtFetcher) {
         if (!provider) {
             provider = window.ethereum || (window.web3 && window.web3.givenProvider) || (window.web3 && window.web3.currentProvider) ;
             if (!provider) {
@@ -34,6 +35,7 @@ class MintableCreate {
         state = new State();
         state.provider = provider;
         state.apiKey = apiKey;
+        state.jwtFetcher = jwtFetcher;
     }
 
     get activeNetwork () {
