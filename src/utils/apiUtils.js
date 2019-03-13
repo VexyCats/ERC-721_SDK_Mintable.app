@@ -53,6 +53,27 @@ const apiUtils = {
             value: web3Utils.parseEtherValue(generatedMessage.value, true),
             usdValue: generatedMessage.usdValue
         };
+    },
+    logCreateTransaction: async function (state, hash, requestObject ) {
+        try {
+            let jwt;
+            const headers = {
+                authorizationToken: state.apiKey
+            }
+            if (state.jwtFetcher) {
+                jwt = [state.jwtFetcher]();
+                jwt = jwt.then ? await jwt : jwt;
+                headers.Authorization = jwt;
+            }
+            let result = fetchUrl(apiUrls.logTransaction + '/' + hash, 'put',
+                headers,
+                requestObject
+            );
+            result = await result;
+            return result;
+        } catch (e) {
+            throw new Error(e.message || e);
+        }
     }
 }
 
