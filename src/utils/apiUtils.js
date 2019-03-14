@@ -24,6 +24,10 @@ const apiUtils = {
                 authorizationToken: apiKey
             });
             result = await result;
+            const error = result.error || result.errorMessage || (result.body && JSON.parse(result.body).error) || (result.body && JSON.parse(result.body).errorMessage);
+            if (error) {
+                throw error;
+            }
             state.abis[constants.GENERATOR_ABI] = JSON.parse(new Buffer(JSON.parse(result.body)).toString());
         } catch (e) {
             throw new Error(e.message || e);
