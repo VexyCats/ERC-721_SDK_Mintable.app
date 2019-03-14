@@ -80,23 +80,38 @@ class MintableCreate {
         }
     }
 
-    resolveWeb3TxEvent (tx, { onTransactionHash, onChanged, onReceipt, onError }) {
-        if (!onTransactionHash && !onChanged && !onReceipt && !onError) {
+    resolveWeb3TxEvent (tx, requestObject, { onTransactionHash, onChanged, onReceipt, onError }) {
+        const noEventsSet = !onTransactionHash && !onChanged && !onReceipt && !onError;
+        const events = {
+            onTransactionHash: hash => {
+                apiUtils.logCreateTransaction(hash, requestObject, state.jwtFetcher);
+                onTransactionHash ? onTransactionHash(hash) : null;
+            },
+            onReceipt: reciept => {
+                apiUtils.confirmCreateTransaction(reciept, requestObject, state.jwtFetcher);
+                onReceipt ? onReceipt(hash) : null;
+            }
+        }
+        if (noEventsSet) {
             return new Promise((resolve) => {
                 web3Utils.setEventListeners( tx, {
-                    onReceipt: (reciept => resolve(
-                        new Response(RESPONSE_TYPE[0], {
-                            message: 'Successfully created Token',
-                            reciept: reciept
-                        })
-                    )),
+                    onTransactionHash: events.onTransactionHash,
+                    onReceipt: (reciept => {
+                        onReceipt(reciept);
+                        resolve(
+                            new Response(RESPONSE_TYPE[0], {
+                                message: 'Successfully created Token',
+                                reciept: reciept
+                            })
+                        )
+                    }),
                     onError: (error => resolve(
                         new Response(RESPONSE_TYPE[1], new Error(error.message || error))
                     ))
                 });
             });
         } else {
-            web3Utils.setEventListeners(tx, { onTransactionHash, onChanged, onReceipt, onError });
+            web3Utils.setEventListeners(tx, Object.assign({ onTransactionHash, onChanged, onReceipt, onError }, events));
             return tx;
         }
     }
@@ -268,7 +283,8 @@ class MintableCreate {
         //     const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
         //     apiUtils.requireGeneratedSignedMessage(generatedMessage);
         //     const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721Metadata', { from, value: generatedMessage.value }, name, symbol, uri, ...metadata);
-        //     return this.resolveWeb3TxEvent(txPromise, {onTransactionHash, onReceipt, onError });
+            // const requestObject = { from, name, symbol, url: uri, metadata, batchMint };
+        //     return this.resolveWeb3TxEvent(txPromise, requestObject, {onTransactionHash, onReceipt, onError });
         // } catch (e) {
         //     return new Response(RESPONSE_TYPE[1], e.message || e );
         // }
@@ -296,7 +312,8 @@ class MintableCreate {
         //     const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
         //     apiUtils.requireGeneratedSignedMessage(generatedMessage);
         //     const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721Metadata', { from, value: generatedMessage.value }, name, symbol, uri);
-        //     return this.resolveWeb3TxEvent(txPromise, {onTransactionHash, onReceipt, onError });
+            // const requestObject = { from, name, symbol, url: uri, metadata, batchMint };
+        //     return this.resolveWeb3TxEvent(txPromise, requestObject, {onTransactionHash, onReceipt, onError });
         // } catch (e) {
         //     return new Response(RESPONSE_TYPE[1], e.message || e );
         // }
@@ -328,7 +345,8 @@ class MintableCreate {
             const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
             apiUtils.requireGeneratedSignedMessage(generatedMessage);
             const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721Metadata', { from }, name, symbol, uri, ...metadata);
-            return this.resolveWeb3TxEvent(txPromise, {onTransactionHash, onReceipt, onError });
+            const requestObject = { from, name, symbol, url: uri, metadata, batchMint };
+            return this.resolveWeb3TxEvent(txPromise, requestObject, {onTransactionHash, onReceipt, onError });
         } catch (e) {
             return new Response(RESPONSE_TYPE[1], e.message || e );
         }
@@ -355,7 +373,8 @@ class MintableCreate {
             const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
             apiUtils.requireGeneratedSignedMessage(generatedMessage);
             const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721', { from }, name, symbol, uri);
-            return this.resolveWeb3TxEvent(txPromise, {onTransactionHash, onReceipt, onError });
+            const requestObject = { from, name, symbol, url: uri, metadata, batchMint };
+            return this.resolveWeb3TxEvent(txPromise, requestObject, {onTransactionHash, onReceipt, onError });
         } catch (e) {
             return new Response(RESPONSE_TYPE[1], e.message || e );
         }
