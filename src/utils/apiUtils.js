@@ -18,6 +18,16 @@ const apiUtils = {
     createLamdaInstance: function (state) {
         return new state.AWS.Lambda();
     },
+    fetchJwt: async function (fn) {
+        if (!fn) {
+            return;
+        }
+        let jwt = fn();
+        if (jwt.then || jwt.status) {
+            jwt = await jwt;
+        }
+        return jwt;
+    },
     validateApiKey: async function (state, apiKey) {
         try {
             let result = fetchUrl(apiUrls.apiAccess, 'get', {
@@ -58,19 +68,19 @@ const apiUtils = {
             usdValue: generatedMessage.usdValue
         };
     },
-    logCreateTransaction: async function (hash, requestObject, jwtFetcher) {
+    logCreateTransaction: async function (apiKey, hash, requestObject, jwtFetcher) {
         try {
-            let url = apiUrls.logTransaction;
+            let url;
+            const headers = {};
 
-            const headers = {
-                authorizationToken: state.apiKey
-            }
             if (jwtFetcher) {
-                let jwt = jwtFetcher();
-                jwt = jwt.then ? await jwt : jwt;
-                headers.Authorization = jwt;
+                headers.Authorization = await this.fetchJwt(jwtFetcher);
                 url = apiUrls.authLogTransaction;
+            } else {
+                headers.authorizationToken = apiKey;
+                url = apiUrls.logTransaction;
             }
+
             let result = fetchUrl(url + '/' + hash, 'put',
                 headers,
                 {
@@ -84,18 +94,17 @@ const apiUtils = {
             throw new Error(e.message || e);
         }
     },
-    confirmCreateTransaction: async function (reciept, responseObject, jwtFetcher) {
+    confirmCreateTransaction: async function (apiKey, reciept, responseObject, jwtFetcher) {
         try {
-            let url = apiUrls.confirmCreateTransaction;
+            let url;
+            const headers = {};
 
-            const headers = {
-                authorizationToken: state.apiKey
-            }
             if (jwtFetcher) {
-                let jwt = jwtFetcher();
-                jwt = jwt.then ? await jwt : jwt;
-                headers.Authorization = jwt;
+                headers.Authorization = await this.fetchJwt(jwtFetcher);
                 url = apiUrls.authConfirmCreateTransaction;
+            } else {
+                headers.authorizationToken = apiKey;
+                url = apiUrls.confirmCreateTransaction;
             }
             let result = fetchUrl(url + '/' + reciept.transactionHash + '/complete', 'put',
                 headers,
