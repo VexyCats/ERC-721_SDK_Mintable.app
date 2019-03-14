@@ -58,20 +58,50 @@ const apiUtils = {
             usdValue: generatedMessage.usdValue
         };
     },
-    logCreateTransaction: async function (state, hash, requestObject ) {
+    logCreateTransaction: async function (hash, requestObject, jwtFetcher) {
         try {
-            let jwt;
+            let url = apiUrls.logTransaction;
+
             const headers = {
                 authorizationToken: state.apiKey
             }
-            if (state.jwtFetcher) {
-                jwt = [state.jwtFetcher]();
+            if (jwtFetcher) {
+                let jwt = jwtFetcher();
                 jwt = jwt.then ? await jwt : jwt;
                 headers.Authorization = jwt;
+                url = apiUrls.authLogTransaction;
             }
-            let result = fetchUrl(apiUrls.logTransaction + '/' + hash, 'put',
+            let result = fetchUrl(url + '/' + hash, 'put',
                 headers,
-                requestObject
+                {
+                    transactionType: 'create',
+                    requestObject
+                }
+            );
+            result = await result;
+            return result;
+        } catch (e) {
+            throw new Error(e.message || e);
+        }
+    },
+    confirmCreateTransaction: async function (reciept, responseObject, jwtFetcher) {
+        try {
+            let url = apiUrls.confirmCreateTransaction;
+
+            const headers = {
+                authorizationToken: state.apiKey
+            }
+            if (jwtFetcher) {
+                let jwt = jwtFetcher();
+                jwt = jwt.then ? await jwt : jwt;
+                headers.Authorization = jwt;
+                url = apiUrls.authConfirmCreateTransaction;
+            }
+            let result = fetchUrl(url + '/' + reciept.transactionHash + '/complete', 'put',
+                headers,
+                {
+                    responseObject
+                }
             );
             result = await result;
             return result;
