@@ -82,7 +82,7 @@ class MintableCreate {
 
     resolveWeb3TxEvent (tx, requestObject, { onTransactionHash, onChanged, onReceipt, onError }) {
         const noEventsSet = !onTransactionHash && !onChanged && !onReceipt && !onError;
-        const events = {
+        const events = Object.assign( {}, { onTransactionHash, onChanged, onReceipt, onError }, {
             onTransactionHash: hash => {
                 apiUtils.logCreateTransaction(hash, requestObject, state.jwtFetcher);
                 onTransactionHash ? onTransactionHash(hash) : null;
@@ -91,13 +91,13 @@ class MintableCreate {
                 apiUtils.confirmCreateTransaction(reciept, requestObject, state.jwtFetcher);
                 onReceipt ? onReceipt(hash) : null;
             }
-        }
+        });
         if (noEventsSet) {
             return new Promise((resolve) => {
                 web3Utils.setEventListeners( tx, {
                     onTransactionHash: events.onTransactionHash,
                     onReceipt: (reciept => {
-                        onReceipt(reciept);
+                        events.onReceipt(reciept);
                         resolve(
                             new Response(RESPONSE_TYPE[0], {
                                 message: 'Successfully created Token',
@@ -111,7 +111,8 @@ class MintableCreate {
                 });
             });
         } else {
-            web3Utils.setEventListeners(tx, Object.assign({ onTransactionHash, onChanged, onReceipt, onError }, events));
+
+            web3Utils.setEventListeners(tx, events);
             return tx;
         }
     }
@@ -372,7 +373,6 @@ class MintableCreate {
             }
             const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
             apiUtils.requireGeneratedSignedMessage(generatedMessage);
-            debugger
             const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721', { from }, name, symbol, uri);
             const requestObject = { from, name, symbol, url: uri, metadata, batchMint: 0 };
             return this.resolveWeb3TxEvent(txPromise, requestObject, {onTransactionHash, onReceipt, onError });
