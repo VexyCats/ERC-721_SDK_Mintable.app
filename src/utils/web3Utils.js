@@ -47,21 +47,24 @@ const web3Utils = {
             return from;
         }
     },
-    setEventListeners: function (tx, {onData, onChanged, onTransactionHash, onReceipt, onError}={}) {
+    setEventListeners: function (tx, {onData, onChanged, onTransactionHash, onReceipt, onConfirmation, onError}={}) {
+        if (onError) {
+            tx.on('error', onError);
+        }
+        if (onTransactionHash) {
+            tx.once('transactionHash', onTransactionHash);
+        }
+        if (onReceipt) {
+            tx.once('receipt', onReceipt);
+        }
+        if (onConfirmation) {
+            tx.on('confirmation', onConfirmation);
+        }
         if (onData) {
             tx.on('data', onData);
         }
-        if (onTransactionHash) {
-            tx.on('tranctionHash', onTransactionHash);
-        }
         if (onChanged) {
             tx.on('change', onChanged);
-        }
-        if (onReceipt) {
-            tx.on('receipt', onReceipt);
-        }
-        if (onError) {
-            tx.on('error', onError);
         }
     }
 }
