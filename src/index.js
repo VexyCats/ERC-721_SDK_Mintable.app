@@ -88,7 +88,7 @@ class MintableCreate {
                 onTransactionHash ? onTransactionHash(hash) : null;
             },
             onReceipt: reciept => {
-                apiUtils.confirmCreateTransaction(state.apiKey, reciept, requestObject, state.jwtFetcher);
+                apiUtils.confirmCreateTransaction(state.apiKey, reciept, state.jwtFetcher);
                 onReceipt ? onReceipt(hash) : null;
             }
         });
@@ -111,7 +111,6 @@ class MintableCreate {
                 });
             });
         } else {
-
             web3Utils.setEventListeners(tx, events);
             return tx;
         }
@@ -221,7 +220,7 @@ class MintableCreate {
                 metadata,
                 usesApi,
                 batchMint: 0
-            }
+            };
             const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
             return new Response(RESPONSE_TYPE[0], 
                 apiUtils.extractSignedMessagePricing(generatedMessage)
@@ -248,7 +247,7 @@ class MintableCreate {
                 metadata,
                 usesApi,
                 batchMint: 0
-            }
+            };
             const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
             return new Response(RESPONSE_TYPE[0], 
                 apiUtils.extractSignedMessagePricing(generatedMessage)

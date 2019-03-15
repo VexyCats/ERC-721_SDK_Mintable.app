@@ -94,10 +94,17 @@ const apiUtils = {
             throw new Error(e.message || e);
         }
     },
-    confirmCreateTransaction: async function (apiKey, reciept, responseObject, jwtFetcher) {
+    confirmCreateTransaction: async function (apiKey, reciept, jwtFetcher) {
         try {
             let url;
             const headers = {};
+            const responseObject = reciept;
+            let status;
+            if (typeof responseObject.status !== 'undefined') {
+                status =  responseObject.status ? 'success' : 'error';
+            } else {
+                status =  'success';
+            }
 
             if (jwtFetcher) {
                 headers.Authorization = await this.fetchJwt(jwtFetcher);
@@ -109,7 +116,10 @@ const apiUtils = {
             let result = fetchUrl(url + '/' + reciept.transactionHash + '/complete', 'put',
                 headers,
                 {
-                    responseObject
+                    responseObject: {
+                        status,
+                        reciept
+                    }
                 }
             );
             result = await result;
