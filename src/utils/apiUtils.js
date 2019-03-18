@@ -18,11 +18,11 @@ const apiUtils = {
     createLamdaInstance: function (state) {
         return new state.AWS.Lambda();
     },
-    generateApiUrl: function (name, symbol, from) {
+    generateApiReference: function (name, symbol, from) {
         const time = new Date().getTime();
         from = from.substring(32, 40);
         const uid = `${name}:${symbol}:${from}-${time}`;
-        return `${apiUrls.metadataApi}/${uid}`;
+        return { uri: `${apiUrls.metadataApi}/${uid}`, apiId: uid };
     },
     fetchJwt: async function (fn) {
         if (!fn) {

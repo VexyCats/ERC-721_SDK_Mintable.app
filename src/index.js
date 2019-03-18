@@ -361,8 +361,11 @@ class MintableCreate {
                 throw new Error(errors.INVALID_SENDER);
             }
             const usesApi = useApi || metadata && metadata.length > 0 || uri.includes(constants.API_URL);
+            let apiRef = {};
+
             if (useApi) {
-                uri = apiUtils.generateApiUrl(name, symbol, from);
+                apiRef = apiUtils.generateApiUrl(name, symbol, from);
+                uri = apiRef.uri;
             }
             const tx = {
                 from,
@@ -377,7 +380,7 @@ class MintableCreate {
             apiUtils.requireGeneratedSignedMessage(generatedMessage);
             const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721', { from }, name, symbol, uri);
             const requestObject = { from, name, symbol, url: uri, usesApi, metadata, batchMint: 0 };
-            return this.resolveWeb3TxEvent(txPromise, requestObject, {onTransactionHash, onReceipt, onError });
+            return this.resolveWeb3TxEvent(txPromise, Objec.assign( {}, requestObject, apiRef), {onTransactionHash, onReceipt, onError });
         } catch (e) {
             return new Response(RESPONSE_TYPE[1], e.message || e );
         }
