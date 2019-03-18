@@ -361,6 +361,9 @@ class MintableCreate {
                 throw new Error(errors.INVALID_SENDER);
             }
             const usesApi = useApi || metadata && metadata.length > 0 || uri.includes(constants.API_URL);
+            if (useApi) {
+                uri = apiUtils.generateApiUrl(name, symbol, from);
+            }
             const tx = {
                 from,
                 name,
