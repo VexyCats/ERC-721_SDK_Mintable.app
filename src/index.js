@@ -308,7 +308,6 @@ class MintableCreate {
             }
             const usesApi = useApi || metadata && metadata.length > 0 || uri.includes(constants.API_URL);
             let apiRef = {};
-            debugger;
 
             if (useApi) {
                 apiRef = apiUtils.generateApiReference(name, symbol, from);
