@@ -7,5 +7,5 @@ export default {
     logTransaction: 'https://5twhd9d3t0.execute-api.us-east-2.amazonaws.com/sdk/logtransaction',
     authConfirmCreateTransaction: 'https://hi6q175i05.execute-api.us-east-2.amazonaws.com/prod/transaction',
     confirmCreateTransaction: 'https://5twhd9d3t0.execute-api.us-east-2.amazonaws.com/sdk/logtransaction',
-    metadataApi: 'https://api.mintable.app'
+    metadataApi: 'https://metadata.mintable.app'
 }
