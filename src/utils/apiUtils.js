@@ -21,7 +21,7 @@ const apiUtils = {
     generateApiReference: function (name, symbol, from) {
         const time = new Date().getTime();
         from = from.substring(32, 40);
-        const uid = `${name}:${symbol}:${from}-${time}`;
+        const uid = `${name.replace(/ /g,"_")}:${symbol.replace(/ /g,"_")}:${from}-${time}`;
         return { uri: `${apiUrls.metadataApi}/${uid}`, apiId: uid };
     },
     fetchJwt: async function (fn) {

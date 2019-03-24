@@ -303,15 +303,15 @@ class MintableCreate {
             this.requireLoadedSDK() && this.requireLoadedGenerator();
             let { from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], useApi=false } = contractDetails;
             from = web3Utils.resolveFrom.bind(state)(from);
-
-            if ( !addressUtils.exists(from) || !addressUtils.isValid(state.web3, from) ) {
+            if ( !(addressUtils.exists(from) && addressUtils.isValid(state.web3, from)) ) {
                 throw new Error(errors.INVALID_SENDER);
             }
             const usesApi = useApi || metadata && metadata.length > 0 || uri.includes(constants.API_URL);
             let apiRef = {};
+            debugger;
 
             if (useApi) {
-                apiRef = apiUtils.generateApiUrl(name, symbol, from);
+                apiRef = apiUtils.generateApiReference(name, symbol, from);
                 uri = apiRef.uri;
             }
             const tx = {
