@@ -22,7 +22,7 @@ const apiUtils = {
         const time = new Date().getTime();
         from = from.substring(32, 40);
         const uid = `${name.replace(/ /g,"_")}:${symbol.replace(/ /g,"_")}:${from}-${time}`;
-        return { uri: `${apiUrls.metadataApi}/${uid}`, apiId: uid };
+        return { uri: `${apiUrls.metadataApi}/${uid}/0`, apiId: uid };
     },
     fetchJwt: async function (fn) {
         if (!fn) {
