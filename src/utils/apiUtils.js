@@ -44,7 +44,9 @@ const apiUtils = {
             if (error) {
                 throw error;
             }
-            state.abis[constants.GENERATOR_ABI] = JSON.parse(new Buffer(JSON.parse(result.body)).toString());
+            let body = result.body || result;
+            body = typeof body === 'string' ? JSON.parse(body) : body;
+            state.abis[constants.GENERATOR_ABI] = JSON.parse(new Buffer(body).toString());
         } catch (e) {
             throw new Error(e.message || e);
         }
