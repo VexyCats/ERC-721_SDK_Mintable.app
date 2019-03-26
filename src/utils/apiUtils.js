@@ -1,27 +1,14 @@
+const uuid = require('uuid/v5');
 import { apiFunctions, apiUrls, constants, errors } from '../config';
 import fetchUrl from './fetchUrl';
 import web3Utils from './web3Utils';
 
 const apiUtils = {
-    loadAWS: function () {
-        this.AWS = require('aws-sdk');
-        this.AWS.config.update({ region: constants.AWS_REGION });
-        this.AWS.config.apiVersions = {
-            apigateway: constants.AWS_APIGATEWAY_VERSION,
-            cognitoidentityserviceprovider: constants.AWS_COGNITO_VERSION,
-            // other service API versions
-        };
-    },
-    getApiGateway: function (state) {
-        return state.ApiGateway ? state.ApiGateway : new state.AWS.APIGateway();
-    },
-    createLamdaInstance: function (state) {
-        return new state.AWS.Lambda();
-    },
     generateApiReference: function (name, symbol, from) {
         const time = new Date().getTime();
         from = from.substring(32, 40);
-        const uid = `${name.replace(/ /g,"_")}:${symbol.replace(/ /g,"_")}:${from}-${time}`;
+        const uidname = `${name.replace(/ /g,"_")}/${symbol.replace(/ /g,"_")}/${from}/${time}`;
+        const uid = uuid(`${apiUrls.metadataApi}/${uidname}`, uuid.URL);
         return { uri: `${apiUrls.metadataApi}/${uid}/0`, apiId: uid };
     },
     fetchJwt: async function (fn) {
@@ -44,7 +31,9 @@ const apiUtils = {
             if (error) {
                 throw error;
             }
-            state.abis[constants.GENERATOR_ABI] = JSON.parse(new Buffer(JSON.parse(result.body)).toString());
+            let body = result.body || result;
+            body = typeof body === 'string' ? JSON.parse(body) : body;
+            state.abis[constants.GENERATOR_ABI] = JSON.parse(new Buffer(body).toString());
         } catch (e) {
             throw new Error(e.message || e);
         }

@@ -8,7 +8,6 @@ class State {
     constructor () {
         this.abis = [];
         this.apiKey = null;
-        this.AWS = null;
         this.activeNetwork = null;
         this.loaded = false;
         this.provider = null;
@@ -125,10 +124,10 @@ class MintableCreate {
                 throw new Error(errors.SDK_LOADING);
             }
             state.loading = true;
-            await apiUtils.loadAWS.bind(state)();
             await apiUtils.validateApiKey(state, state.apiKey);
             await web3Utils.loadWeb3.bind(state)();
             state.loaded = true;
+            state.loading = false;
             return state.loaded;
         } catch (e) {
             throw new Error(errors[e.message || e] || (e.message || e));
