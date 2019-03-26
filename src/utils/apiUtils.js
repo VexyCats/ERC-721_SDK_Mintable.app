@@ -18,6 +18,12 @@ const apiUtils = {
     createLamdaInstance: function (state) {
         return new state.AWS.Lambda();
     },
+    generateApiReference: function (name, symbol, from) {
+        const time = new Date().getTime();
+        from = from.substring(32, 40);
+        const uid = `${name.replace(/ /g,"_")}:${symbol.replace(/ /g,"_")}:${from}-${time}`;
+        return { uri: `${apiUrls.metadataApi}/${uid}/0`, apiId: uid };
+    },
     fetchJwt: async function (fn) {
         if (!fn) {
             return;
@@ -94,11 +100,11 @@ const apiUtils = {
             throw new Error(e.message || e);
         }
     },
-    confirmCreateTransaction: async function (apiKey, reciept, jwtFetcher) {
+    confirmCreateTransaction: async function (apiKey, receipt, jwtFetcher) {
         try {
             let url;
             const headers = {};
-            const responseObject = reciept;
+            const responseObject = receipt;
             let status;
             if (typeof responseObject.status !== 'undefined') {
                 status =  responseObject.status ? 'success' : 'error';
@@ -113,12 +119,12 @@ const apiUtils = {
                 headers.authorizationToken = apiKey;
                 url = apiUrls.confirmCreateTransaction;
             }
-            let result = fetchUrl(url + '/' + reciept.transactionHash + '/complete', 'put',
+            let result = fetchUrl(url + '/' + receipt.transactionHash + '/complete', 'put',
                 headers,
                 {
                     responseObject: {
                         status,
-                        reciept
+                        receipt
                     }
                 }
             );
