@@ -275,6 +275,7 @@ class MintableCreate {
             if (metadata.length < 3) {
                 metadata = metadata.concat(Array(3-metadata.length).fill(''));
             }
+            metadata = metadata.map(data => String(data));
             //TODO uri.includes(constants.API_URL);
             const usesApi = false;
             const tx = {
@@ -286,10 +287,9 @@ class MintableCreate {
                 usesApi,
                 batchMint: 0
             }
-            metadata = metadata.map(data => String(data));
             const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
             apiUtils.requireGeneratedSignedMessage(generatedMessage);
-            const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721Metadata', { from }, name, symbol, uri, ...metadata);
+            const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721Metadata', { from, value: generatedMessage.value }, name, symbol, uri, ...metadata, generatedMessage.value, generatedMessage.timestamp, generatedMessage.data.signature);
             const requestObject = Object.assign({}, contractDetails, { url: uri, usesApi, batchMint: 0, isMintableAddress: true, network: state.activeNetwork });
             return this.resolveWeb3TxEvent(txPromise, requestObject, {onTransactionHash, onReceipt, onError });
         } catch (e) {
@@ -323,7 +323,7 @@ class MintableCreate {
             }
             const generatedMessage = await apiUtils.generateSignedMessage(state, tx);
             apiUtils.requireGeneratedSignedMessage(generatedMessage);
-            const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721', { from, value: generatedMessage.value }, name, symbol, uri, fee, generatedMessage.timestamp, usesApi, generatedMessage.data.signature);
+            const txPromise = web3Utils.methodTransaction(state.generatorContract, 'createERC721', { from, value: generatedMessage.value }, name, symbol, uri, generatedMessage.value, generatedMessage.timestamp, usesApi, generatedMessage.data.signature);
             const requestObject = Object.assign({}, contractDetails, apiRef, { url: uri, usesApi, batchMint: 0, isMintableAddress: true, network: state.activeNetwork });
             return this.resolveWeb3TxEvent(txPromise, requestObject, {onTransactionHash, onReceipt, onError });
         } catch (e) {
