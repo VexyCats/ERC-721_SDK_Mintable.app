@@ -1,4 +1,4 @@
-import uuid from 'uuid';
+const uuid = require('uuid/v5');
 import { apiFunctions, apiUrls, constants, errors } from '../config';
 import fetchUrl from './fetchUrl';
 import web3Utils from './web3Utils';
@@ -23,7 +23,7 @@ const apiUtils = {
         const time = new Date().getTime();
         from = from.substring(32, 40);
         const uidname = `${name.replace(/ /g,"_")}/${symbol.replace(/ /g,"_")}/${from}/${time}`;
-        const uid = uuid.v5(`${apiUrls.metadataApi}/${uidname}/0`, uuid.v5.URL);
+        const uid = uuid(`${apiUrls.metadataApi}/${uidname}/0`, uuid.URL);
         return { uri: `${apiUrls.metadataApi}/${uid}/0`, apiId: uid };
     },
     fetchJwt: async function (fn) {
