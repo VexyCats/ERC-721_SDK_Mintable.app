@@ -84,7 +84,8 @@ class MintableCreate {
         const events = Object.assign( {}, { onTransactionHash, onChanged, onReceipt, onError }, {
             onTransactionHash: hash => {
                 apiUtils.logCreateTransaction(state.apiKey ,hash, requestObject, state.jwtFetcher);
-                onTransactionHash ? onTransactionHash(hash) : null;
+                const apiUrl = requestObject.usesApi ? requestObject.uri : undefined;
+                onTransactionHash ? onTransactionHash(hash, apiUrl) : null;
             },
             onReceipt: reciept => {
                 apiUtils.confirmCreateTransaction(state.apiKey, reciept, state.jwtFetcher);
