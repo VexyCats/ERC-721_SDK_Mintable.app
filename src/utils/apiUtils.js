@@ -4,21 +4,6 @@ import fetchUrl from './fetchUrl';
 import web3Utils from './web3Utils';
 
 const apiUtils = {
-    loadAWS: function () {
-        this.AWS = require('aws-sdk');
-        this.AWS.config.update({ region: constants.AWS_REGION });
-        this.AWS.config.apiVersions = {
-            apigateway: constants.AWS_APIGATEWAY_VERSION,
-            cognitoidentityserviceprovider: constants.AWS_COGNITO_VERSION,
-            // other service API versions
-        };
-    },
-    getApiGateway: function (state) {
-        return state.ApiGateway ? state.ApiGateway : new state.AWS.APIGateway();
-    },
-    createLamdaInstance: function (state) {
-        return new state.AWS.Lambda();
-    },
     generateApiReference: function (name, symbol, from) {
         const time = new Date().getTime();
         from = from.substring(32, 40);
