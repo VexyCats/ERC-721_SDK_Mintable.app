@@ -1,3 +1,4 @@
+import uuid from 'uuid';
 import { apiFunctions, apiUrls, constants, errors } from '../config';
 import fetchUrl from './fetchUrl';
 import web3Utils from './web3Utils';
@@ -21,7 +22,8 @@ const apiUtils = {
     generateApiReference: function (name, symbol, from) {
         const time = new Date().getTime();
         from = from.substring(32, 40);
-        const uid = `${name.replace(/ /g,"_")}:${symbol.replace(/ /g,"_")}:${from}-${time}`;
+        const uidname = `${name.replace(/ /g,"_")}/${symbol.replace(/ /g,"_")}/${from}/${time}`;
+        const uid = uuid.v5(`${apiUrls.metadataApi}/${uidname}/0`, uuid.v5.URL);
         return { uri: `${apiUrls.metadataApi}/${uid}/0`, apiId: uid };
     },
     fetchJwt: async function (fn) {
@@ -44,7 +46,9 @@ const apiUtils = {
             if (error) {
                 throw error;
             }
-            state.abis[constants.GENERATOR_ABI] = JSON.parse(new Buffer(JSON.parse(result.body)).toString());
+            let body = result.body || result;
+            body = typeof body === 'string' ? JSON.parse(body) : body;
+            state.abis[constants.GENERATOR_ABI] = JSON.parse(new Buffer(body).toString());
         } catch (e) {
             throw new Error(e.message || e);
         }
