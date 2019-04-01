@@ -13,6 +13,7 @@ class State {
         this.provider = null;
         this.web3 = null;
         this.generatorContract = null;
+        this.batchGeneratorContract = null;
         this.jwtFetcher = null;
     }
 };
@@ -49,6 +50,10 @@ class MintableCreate {
         return state.generatorContract;
     }
 
+    get batchDeployerContract () {
+        return state.batchGeneratorContract;
+    }
+
     get errors () {
         return errors;
     }
@@ -68,7 +73,13 @@ class MintableCreate {
     }
 
     requireLoadedGenerator () {
-        if (!this.generatorContract) {
+        if (!this.deployerContract) {
+            throw new Error(errors.SDK_NOT_LOADED);
+        }
+    }
+
+    requireLoadedBatchMintGenerator () {
+        if (!this.batchDeployerContract) {
             throw new Error(errors.SDK_NOT_LOADED);
         }
     }
