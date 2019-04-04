@@ -259,7 +259,7 @@ class MintableCreate {
             let apiRef = {};
 
             if (useApi) {
-                apiRef = apiUtils.generateApiReference(name, symbol, from);
+                apiRef = apiUtils.generateApiReference();
                 uri = apiRef.uri;
             }
             const tx = {
@@ -329,7 +329,7 @@ class MintableCreate {
             let apiRef = {};
 
             if (useApi) {
-                apiRef = apiUtils.generateApiReference(name, symbol, from);
+                apiRef = apiUtils.generateApiReference();
                 uri = apiRef.uri;
             }
             const tx = {
