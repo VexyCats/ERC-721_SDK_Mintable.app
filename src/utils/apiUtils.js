@@ -6,7 +6,7 @@ import web3Utils from './web3Utils';
 const apiUtils = {
     generateApiReference: function () {
         const uid = nanoid()
-        return { uri: `${apiUrls.metadataApi}/${uid}/0`, apiId: uid };
+        return { uri: `${uid}/0`, apiId: uid };
     },
     fetchJwt: async function (fn) {
         if (!fn) {
