@@ -9,7 +9,7 @@ const apiUtils = {
         from = from.substring(32, 40);
         const uidname = `${name.replace(/ /g,"_")}/${symbol.replace(/ /g,"_")}/${from}/${time}`;
         const uid = uuid(`${apiUrls.metadataApi}/${uidname}`, uuid.URL);
-        return { uri: `${apiUrls.metadataApi}/${uid}/0`, apiId: uid };
+        return { uri: `${uid}/0`, apiId: uid };
     },
     fetchJwt: async function (fn) {
         if (!fn) {

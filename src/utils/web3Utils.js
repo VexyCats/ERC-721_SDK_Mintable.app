@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import { addresses, apiFunctions, apiUrls, constants } from '../config';
+import { addresses, apiFunctions, apiUrls, batchAddresses, constants } from '../config';
 import { addressUtils } from './';
 
 const web3Utils = {
@@ -13,8 +13,12 @@ const web3Utils = {
         const accounts = await this.web3.eth.getAccounts();
         this.defaultAccount = accounts && accounts[0];
         const address = addresses[this.activeNetwork];
+        const batchAddress = batchAddresses[this.activeNetwork];
         if (address) {
             this.generatorContract = await new this.web3.eth.Contract(this.abis[constants.GENERATOR_ABI], address);
+        }
+        if (batchAddress) {
+            this.batchGeneratorContract = await new this.web3.eth.Contract(this.abis[constants.GENERATOR_ABI], batchAddress);
         }
         return true;
     },
