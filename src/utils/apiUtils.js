@@ -1,14 +1,11 @@
-const uuid = require('uuid/v5');
+const nanoid = require('nanoid');
 import { apiFunctions, apiUrls, constants, errors } from '../config';
 import fetchUrl from './fetchUrl';
 import web3Utils from './web3Utils';
 
 const apiUtils = {
-    generateApiReference: function (name, symbol, from) {
-        const time = new Date().getTime();
-        from = from.substring(32, 40);
-        const uidname = `${name.replace(/ /g,"_")}/${symbol.replace(/ /g,"_")}/${from}/${time}`;
-        const uid = uuid(`${apiUrls.metadataApi}/${uidname}`, uuid.URL);
+    generateApiReference: function () {
+        const uid = nanoid()
         return { uri: `${uid}/0`, apiId: uid };
     },
     fetchJwt: async function (fn) {
