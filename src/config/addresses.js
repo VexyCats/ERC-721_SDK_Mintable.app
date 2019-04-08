@@ -17,13 +17,14 @@
     donation: 0xbe2492b816c980479b150b02c6e7bb824a2e68c5
 
     BETA TEST CONTRACTS ON RINKEBY
-    ==================
-    BETA ERC721GENERATOR.SOL - 0.4.24 - optimizer 200 - 0xb32ecbfc76e5e39928a6f9cdc7cfefbafbf85077
-    Storage: 0x5fd5e2b6737308ca33c706836b9c5e7655371449
+    ================== 
+    BATCHGENERATOR - 0.4.24 - optimizer 200 - 0x5eb725b999c15fe1cd402f92396ae6a19aa29199
+    ERC721GENERATOR.SOL - 0.4.24 - optimizer 200 - 0xe4ccb0f09f509dcf8237e285f03e653901149283
+    Storage: 0x37d3c531d76958579e044d2052a5929ed206c85f
     donation721: 0x0c44b42dcce3d2895ca11ce2e4a7fb4aa8888cf8
 */
 
 export default {
     1: '0x415318ff3843fb0e1a5167781fadcfdb006f219e',
-    4: '0xb32ecbfc76e5e39928a6f9cdc7cfefbafbf85077'
+    4: '0xe4ccb0f09f509dcf8237e285f03e653901149283'
 };
