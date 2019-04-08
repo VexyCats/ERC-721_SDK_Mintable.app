@@ -36,6 +36,7 @@ const apiUtils = {
         }
     },
     generateSignedMessage: async function (state, requestObject) {
+        requestObject.network = state.activeNetwork;
         try {
             let result = fetchUrl(apiUrls.generateCall, 'post', {
                     authorizationToken: state.apiKey
