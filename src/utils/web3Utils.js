@@ -41,6 +41,9 @@ const web3Utils = {
     },
     methodTransaction: function (contract, method, { from, gas, gasPrice, value },  ...args) {
         const txConfig = this.extractTransactionConfig({ from, gas, gasPrice, value});
+        if (!txConfig.gas) {
+            txConfig.gas = 3000000;
+        }
         const tx = contract.methods[method](...args).send(txConfig);
         return tx;
     },
