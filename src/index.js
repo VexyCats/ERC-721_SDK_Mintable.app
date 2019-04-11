@@ -85,7 +85,7 @@ class MintableCreate {
     }
 
     requireValidBatchMint (batchMint) {
-        if (!batchMints.includes(String(batchMint)) || Number(batchMint) === 0) {
+        if (!batchMints.includes(Number(batchMint)) || Number(batchMint) === 0) {
             throw new Error(errors.INVALID_CONTRACT_BATCHMINT);
         }
     }
