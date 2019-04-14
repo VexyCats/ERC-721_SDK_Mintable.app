@@ -350,11 +350,6 @@ class MintableCreate {
             return new Response(RESPONSE_TYPE[1], e.message || e );
         }
     }
-
-    async create ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata=[], useApi=false  }={}) {
-        const usesApi = useApi || metadata.length > 3;
-
-    }
 }
 
 export default MintableCreate;

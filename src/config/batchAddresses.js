@@ -6,15 +6,14 @@
     mainnet donation contract = 0xc041154d39f54fdeb90ac5d64b2414c5024080aa
     -Zach
 
-    BETA TEST CONTRACTS ON RINKEBY
-    ================== 
-    BATCHGENERATOR - 0.4.24 - optimizer 200 - 0x5eb725b999c15fe1cd402f92396ae6a19aa29199
-    ERC721GENERATOR.SOL - 0.4.24 - optimizer 200 - 0xe4ccb0f09f509dcf8237e285f03e653901149283
+    BETA 0.2 
+    normalGen:  0.4.24 - optimizer 200 0x0992f81191c440cea0ebff757efd89fea1ec2534
+    Batch:  0.4.24 - optimizer 200  - 0x73b3a1b17a6d4cc67324f34d5d272f58e7ee8ab8
     Storage: 0x37d3c531d76958579e044d2052a5929ed206c85f
     donation721: 0x0c44b42dcce3d2895ca11ce2e4a7fb4aa8888cf8
 */
 
 export default {
     1: '',
-    4: '0x5eb725b999c15fe1cd402f92396ae6a19aa29199'
+    4: '0x73b3a1b17a6d4cc67324f34d5d272f58e7ee8ab8'
 };
