@@ -24,6 +24,6 @@
 */
 
 export default {
-    1: '0xA6455bCed20f0e0BA5043f0607fBcD47676EEbC6',
+    1: "0x328572d65954fb4a7cb7da50c225ced96a74620f",
     4: '0x0992f81191c440cea0ebff757efd89fea1ec2534'
 };
