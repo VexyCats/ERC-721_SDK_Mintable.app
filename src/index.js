@@ -281,6 +281,12 @@ class MintableCreate {
         }
     }
 
+
+    /**
+     * Create the base typobjecte of ERC721 with no metadata in the smart contract. To use metadata, the https://mintable.app Api is required.
+     * @param {object} contractDetails Object containing required fields for the contract creation: 
+     * @param {otbjec} events Object containing transaction events: 
+     */
     async createERC721Metadata (contractDetails={},  { onTransactionHash, onReceipt, onError } = {}) {
         try {
             this.requireLoadedSDK() && this.requireLoadedGenerator();
@@ -316,6 +322,37 @@ class MintableCreate {
         }
     }
 
+
+    /**
+     * @typedef from
+     * @type {string} New contract creator
+     */
+    /**
+     * @typedef name
+     * @type {string} Name of the token to be generated
+     */
+    /**
+     * @typedef symbol
+     * @type {string} Symbol of the token to be generated
+     */
+    /**
+     * @typedef uri
+     * @type {string} Uri referrence for the first token of the new Token to be generated
+     */
+    /**
+     * @typedef metadata
+     * @type {...string | ...object} An array of string or key-value pair object referring to the details for the initial token to be generaed.
+     */
+    /**
+     * @typedef useApi
+     * @type {bool} Whether token to be generaed will use https://Mintable.app Api
+     */
+
+    /**
+     * Create the base type of ERC721 with no metadata in the smart contract. To use metadata, the https://mintable.app Api is required.
+     * @param {object} contractDetails Object containing required fields for the contract creation: 
+     * @param {*} param1 
+     */
     async createERC721 (contractDetails={}, { onTransactionHash, onReceipt, onError } = {}) {
         try {
             this.requireLoadedSDK() && this.requireLoadedGenerator();

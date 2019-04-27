@@ -1,3 +1,7 @@
+/**
+ * @typedef RESPONSE_TYPE
+ * @type {string}
+ */
 const RESPONSES = [
     'success',
     'error'
@@ -8,6 +12,12 @@ const RESPONSE_TYPE = {
     1: RESPONSES[1],
 }
 
+/**
+ * Create response object type as return value for sdk function call
+ * @param {RESPONSE_TYPE} type The type of response 
+ * @param {*} content The value of the response, to be returned
+ * @returns {object} The Response object containing status, error or result
+ */
 const callResponse = function (type, content) {
     if (!RESPONSES.includes(type)) {
         if (!RESPONSE_TYPE[type]) {
