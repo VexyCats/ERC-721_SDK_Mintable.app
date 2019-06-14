@@ -15,10 +15,12 @@ const web3Utils = {
         const address = addresses[this.activeNetwork];
         const batchAddress = batchAddresses[this.activeNetwork];
         if (address) {
-            this.generatorContract = await new this.web3.eth.Contract(this.abis[constants.GENERATOR_ABI], address);
+            this.generatorContract = new this.web3.eth.Contract(this.abis[constants.GENERATOR_ABI], address);
+            if (assistInstance) this.generatorContract = this.assistInstance.Contract(this.generatorContract);
         }
         if (batchAddress) {
-            this.batchGeneratorContract = await new this.web3.eth.Contract(this.abis[constants.GENERATOR_ABI], batchAddress);
+            this.batchGeneratorContract = new this.web3.eth.Contract(this.abis[constants.GENERATOR_ABI], batchAddress);
+            if (assistInstance) this.batchGeneratorContract = this.assistInstance.Contract(this.batchGeneratorContract);
         }
         return true;
     },
@@ -36,7 +38,8 @@ const web3Utils = {
             value * constants.ETHER;
     },
     fetchGeneratedCount: async function (abi={}, address) {
-        const generator = await new this.web3.eth.Contract(abi, address);
+        let generator = await new this.web3.eth.Contract(abi, address);
+        if (assistInstance) generator = this.assistInstance.Contract(generator)
         return (await generator.methods.viewTotal().call()).valueOf();
     },
     methodTransaction: function (contract, method, { from, gas, gasPrice, value },  ...args) {
