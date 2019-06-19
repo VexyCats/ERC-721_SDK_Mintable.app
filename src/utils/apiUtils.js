@@ -3,11 +3,23 @@ import { apiFunctions, apiUrls, constants, errors } from '../config';
 import fetchUrl from './fetchUrl';
 import web3Utils from './web3Utils';
 
+/**
+ * Utility to parse and process Api calls to https://mintable.app servers
+ * @exports utils/apiUtils
+ */
 const apiUtils = {
+    /**Generate an uuid to refeerence the new contract about to be deployed to the network,
+     * since there is no address till the transaction is mined. 
+     * @returns {object} A uuid object containing both the uuid, and the generated uri
+     */
     generateApiReference: function () {
         const uid = nanoid()
         return { uri: `${uid}/0`, apiId: uid };
     },
+    /**Retrieve current Jwt using the provided function,
+     * required to make authenticated call to the https://mintable.app server,
+     * @returns {string} The retrieved jwt (JSON Web Token)
+     */
     fetchJwt: async function (fn) {
         if (!fn) {
             return;

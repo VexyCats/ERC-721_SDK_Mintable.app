@@ -14,6 +14,7 @@ const RESPONSE_TYPE = {
 
 /**
  * Create response object type as return value for sdk function call
+ * @exports callResponse
  * @param {RESPONSE_TYPE} type The type of response 
  * @param {*} content The value of the response, to be returned
  * @returns {object} The Response object containing status, error or result
