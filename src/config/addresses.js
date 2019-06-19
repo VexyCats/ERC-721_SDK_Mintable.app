@@ -23,6 +23,13 @@
     donation721: 0x0c44b42dcce3d2895ca11ce2e4a7fb4aa8888cf8
 */
 
+/**
+ * @module config/addresses
+ */
+
+/**
+ * Exports addresses of https://mintable.app contracts on different chains
+ */
 export default {
     1: "0x328572d65954fb4a7cb7da50c225ced96a74620f",
     4: '0x0992f81191c440cea0ebff757efd89fea1ec2534'

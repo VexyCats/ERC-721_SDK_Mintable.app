@@ -1,3 +1,8 @@
+/**
+ * @module config/constants
+ */
+
+ /** Export various non-specific constants for use across the Sdk */
 export default {
     API_URL: 'https://api.mintable.app',
     AWS_REGION: 'us-east-2',

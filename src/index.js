@@ -4,6 +4,20 @@ import { addressUtils, apiUtils, web3Utils } from './utils';
 
 let state;
 
+/**
+ * Storage for state of the Api and connection to both Web3 and https://mintable.app
+ * @property {object[]} abis Array of all Abi objects retrieved after verification
+ * @property {string} apiKey Api key used to access the sdk, provided by https://mintable.app
+ * @property {string} activeNetwork Present network the sdk is connected to through the provided Web3 provider
+ * @property {bool} loaded Whether all components needed to use the Api are fully loaded and the sdk ready to make calls
+ * @property {object} provider The Web3 provider used to instantiate the sdk. Same as provided as init if provided, else extracted by the sdk
+ * @property {object} web3 Instance of Web3 being usd by the Sdk
+ * @property {object} generatorContract Instance of the Generator contract being used by the sdk
+ * @property {object} batchGeneratorContract Instance of the batchMint Generator contract being used by the Sdk
+ * @property {function=} jwtFetcher Function used to fetch the JWT used to interact with https://mintable.app servers
+     
+ }} Function
+ */
 class State {
     constructor () {
         this.abis = [];
@@ -321,32 +335,6 @@ class MintableCreate {
             return new Response(RESPONSE_TYPE[1], e.message || e );
         }
     }
-
-
-    /**
-     * @typedef from
-     * @type {string} New contract creator
-     */
-    /**
-     * @typedef name
-     * @type {string} Name of the token to be generated
-     */
-    /**
-     * @typedef symbol
-     * @type {string} Symbol of the token to be generated
-     */
-    /**
-     * @typedef uri
-     * @type {string} Uri referrence for the first token of the new Token to be generated
-     */
-    /**
-     * @typedef metadata
-     * @type {...string | ...object} An array of string or key-value pair object referring to the details for the initial token to be generaed.
-     */
-    /**
-     * @typedef useApi
-     * @type {bool} Whether token to be generaed will use https://Mintable.app Api
-     */
 
     /**
      * Create the base type of ERC721 with no metadata in the smart contract. To use metadata, the https://mintable.app Api is required.
