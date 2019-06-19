@@ -356,19 +356,22 @@ class MintableCreate {
     async createERC721 (contractDetails={}, { onTransactionHash, onReceipt, onError } = {}) {
         try {
             this.requireLoadedSDK() && this.requireLoadedGenerator();
-            let { from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], useApi=false } = contractDetails;
+            let { from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, useApi=false } = contractDetails;
             from = web3Utils.resolveFrom.bind(state)(from);
 
             if ( !(addressUtils.exists(from) && addressUtils.isValid(state.web3, from)) ) {
                 throw new Error(errors.INVALID_SENDER);
             }
-            const usesApi = useApi || metadata && metadata.length > 0 || uri.includes(constants.API_URL);
+
+            const metadata = []
+            const usesApi = useApi || uri.includes(constants.API_URL);
             let apiRef = {};
 
             if (useApi) {
                 apiRef = apiUtils.generateApiReference();
                 uri = apiRef.uri;
             }
+
             const tx = {
                 from,
                 name,
