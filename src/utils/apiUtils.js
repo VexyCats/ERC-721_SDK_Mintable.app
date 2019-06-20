@@ -10,7 +10,7 @@ import web3Utils from './web3Utils';
 const apiUtils = {
     /**Generate an uuid to refeerence the new contract about to be deployed to the network,
      * since there is no address till the transaction is mined. 
-     * @returns {object} A uuid object containing both the uuid, and the generated uri
+     * @returns {object} A uuid object containing both the uuid (apiId), and the generated uri (uri)
      */
     generateApiReference: function () {
         const uid = nanoid()
@@ -30,6 +30,13 @@ const apiUtils = {
         }
         return jwt;
     },
+    /**Connect to the https://mintable.app server,
+     * to Validate the provided ApiKey used to instantiate the Sdk,
+     * and if valid, store the returned abi(s).
+     * Required to use the Sdk.
+     * @param {object} state The State Object of the Sdk instance
+     * @param {string} apiKey The Api key used to instantiate the Sdk
+     */
     validateApiKey: async function (state, apiKey) {
         try {
             let result = fetchUrl(apiUrls.apiAccess, 'get', {
@@ -47,6 +54,12 @@ const apiUtils = {
             throw new Error(e.message || e);
         }
     },
+    /**Connect to the https://mintable.app server,
+     * to generate the Oracle's signed message,
+     * which will be sent to the smart contract, and used to validate Access to the smart contracts
+     * @param {object} state The State Object of the Sdk instance
+     * @param {tansactionDetails} requestObject The extracted object with the tansactions details
+     */
     generateSignedMessage: async function (state, requestObject) {
         requestObject.network = state.activeNetwork;
         try {

@@ -6,6 +6,7 @@ let state;
 
 /**
  * Storage for state of the Api and connection to both Web3 and https://mintable.app
+ * @protected
  * @property {object[]} abis Array of all Abi objects retrieved after verification
  * @property {string} apiKey Api key used to access the sdk, provided by https://mintable.app
  * @property {string} activeNetwork Present network the sdk is connected to through the provided Web3 provider
@@ -49,7 +50,7 @@ class State {
  * @typedef {bool} useApi Whether token to be generaed will use https://Mintable.app Api
  */
 /**
- * @typedef {object} contractDetails
+ * @typedef {object} tansactionDetails
  * @property {from} from New contract creator
  * @property {name} name Name of the token to be generated
  * @property {symbol} symbol Symbol of the token to be generated
@@ -327,7 +328,7 @@ class MintableCreate {
 
     /**
      * Create the base type of ERC721 with metadata only in the smart contract. To use metadata, the https://mintable.app Api is required.
-     * @param {object} contractDetails Object containing required fields for the contract creation: 
+     * @param {tansactionDetails} contractDetails Object containing required fields for the contract creation
      * @param {otbjec} events Object containing transaction events: 
      */
     async createERC721Metadata (contractDetails={},  { onTransactionHash, onReceipt, onError } = {}) {
@@ -367,7 +368,7 @@ class MintableCreate {
 
     /**
      * Create the base type of ERC721 with no metadata in the smart contract. To use metadata, the https://mintable.app Api is required.
-     * @param {contractDetails} contractDetails Object containing required fields for the contract creation: 
+     * @param {tansactionDetails} contractDetails Object containing required fields for the contract creation
      * @param {object} events Object containing transaction events: 
      */
     async createERC721 (contractDetails={}, { onTransactionHash, onReceipt, onError } = {}) {

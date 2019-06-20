@@ -2,15 +2,20 @@
  * @typedef RESPONSE_TYPE
  * @type {string}
  */
+/**
+ * @typedef RESPONSE_TYPES
+ * @type {RESPONSE_TYPE[]}
+ */
+
 const RESPONSES = [
     'success',
     'error'
-]
+];
 
 const RESPONSE_TYPE = {
     0: RESPONSES[0],
     1: RESPONSES[1],
-}
+};
 
 /**
  * Create response object type as return value for sdk function call
