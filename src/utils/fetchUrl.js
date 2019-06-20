@@ -1,3 +1,7 @@
+/**
+ * Mapping of methods to the standard value of the corresponding Http method 
+ * @protected
+ */
 const Methods = {
     '': 'GET',
     get: 'GET',
@@ -5,6 +9,15 @@ const Methods = {
     put: 'PUT'
 };
 
+/**
+ * Utility to parse and process Http(s) call within the Sdk
+ * @exports utils/fetchUrl
+ * @param {string} url The uri/url (destination) of the Http call
+ * @param {string=} method The type of call
+ * @param {object=} headers The headers to be sent with the call 
+ * @param {string} body The JSON stringified body of the call
+ * @param {bool=} nocors Whether the call should be a cors call
+ */
 const fetchUrl = async (url, method='get', headers = {}, body = "{}", nocors=false) => {
     method = Methods[method.toLowerCase()];
     Object.assign(headers, {

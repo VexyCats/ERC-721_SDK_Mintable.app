@@ -1,7 +1,15 @@
 const nanoid = require('nanoid');
-import { apiFunctions, apiUrls, constants, errors } from '../config';
+import { apiUrls, constants, errors } from '../config';
 import fetchUrl from './fetchUrl';
 import web3Utils from './web3Utils';
+
+/**
+ * @typedef {object} signedMessage
+ * @property {number} timestamp Time at whihc the signature was generated
+ * @property {string} value The value in Gwei of the transaction (Amount to be sent with the transaction).
+ * @property {float} usdValue The value in USD of the transaction 
+ * @property {object} data Object containing the generated signature
+ */
 
 /**
  * Utility to parse and process Api calls to https://mintable.app servers
@@ -30,7 +38,7 @@ const apiUtils = {
         }
         return jwt;
     },
-    /**Connect to the https://mintable.app server,
+    /**Connects to the https://mintable.app server,
      * to Validate the provided ApiKey used to instantiate the Sdk,
      * and if valid, store the returned abi(s).
      * Required to use the Sdk.
@@ -54,11 +62,12 @@ const apiUtils = {
             throw new Error(e.message || e);
         }
     },
-    /**Connect to the https://mintable.app server,
+    /**Connects to the https://mintable.app server,
      * to generate the Oracle's signed message,
      * which will be sent to the smart contract, and used to validate Access to the smart contracts
      * @param {object} state The State Object of the Sdk instance
      * @param {tansactionDetails} requestObject The extracted object with the tansactions details
+     * @returns {signedMessage} The generated signMessage
      */
     generateSignedMessage: async function (state, requestObject) {
         requestObject.network = state.activeNetwork;
@@ -74,11 +83,19 @@ const apiUtils = {
             throw new Error(e.message || e);
         }
     },
+    /**Throws if the provided object does not include members
+     * of the Oracle's signed message.
+     * @param {signedMessage} generatedMessage The generatedSignaature Object
+     */
     requireGeneratedSignedMessage: function (generatedMessage) {
-        if (generatedMessage.status === 'error' || !generatedMessage.timestamp || !generatedMessage.value || !generatedMessage.data || !generatedMessage.data.v || !generatedMessage.data.r || !generatedMessage.data.s) {
+        if (generatedMessage.status === 'error' || !generatedMessage.timestamp || !generatedMessage.value || !generatedMessage.data || !generatedMessage.data.v || !generatedMessage.data.r || !generatedMessage.data.s || !generatedMessage.data.signature) {
             throw new Error(errors.INVALID_SIGNED_MESSAGE);
         }
     },
+    /**Extracts the pricing  from the Oracle's signed message,
+     * @param {signedMessage} generatedMessage The generatedSignaature Object
+     * @returns {object} The price object containing the value and usdValue extracted from the signedMessage
+     */
     extractSignedMessagePricing: function (generatedMessage) {
         this.requireGeneratedSignedMessage(generatedMessage);
         return {
@@ -86,6 +103,15 @@ const apiUtils = {
             usdValue: generatedMessage.usdValue
         };
     },
+    /**Connects to the https://mintable.app server,
+     * to Log a new transaction created using the Sdk.
+     * If Jwt fetching function provided, makes a authenticated call, otherwise, makes a non-authenticated call to the server.
+     * @param {string} apiKey The Api key used to instantiate the Sdk
+     * @param {string} hash The transactionHash of the new transaction
+     * @param {transactionDetails} requestObject Object containing the transaction details
+     * @param {function=} jwtFetcher Function called to retreive a current Jwt.
+     * @returns {object} Result of the method call.
+     */
     logCreateTransaction: async function (apiKey, hash, requestObject, jwtFetcher) {
         try {
             let url;
@@ -112,6 +138,14 @@ const apiUtils = {
             throw new Error(e.message || e);
         }
     },
+    /**Connects to the https://mintable.app server,
+     * to confirm the confirmation in the network of a previously logged transaction using the Sdk.
+     * If Jwt fetching function provided, makes a authenticated call, otherwise, makes a non-authenticated call to the server.
+     * @param {string} apiKey The Api key used to instantiate the Sdk
+     * @param {object} receipt The receipt object of the confirmed transaction
+     * @param {function=} jwtFetcher Function called to retreive a current Jwt.
+     * @returns {object} Result of the method call.
+     */
     confirmCreateTransaction: async function (apiKey, receipt, jwtFetcher) {
         try {
             let url;
