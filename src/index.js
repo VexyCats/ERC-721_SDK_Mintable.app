@@ -51,12 +51,23 @@ class State {
  */
 /**
  * @typedef {object} tansactionDetails
+ * Object containing properties required to complete a mintable create transaction
  * @property {from} from New contract creator
  * @property {name} name Name of the token to be generated
  * @property {symbol} symbol Symbol of the token to be generated
  * @property {uri} uri Uri referrence for the first token of the new Token to be generated
  * @property {metadata=} metadata An array of string or key-value pair object referring to the details for the initial token to be generated.
  * @property {useApi=} useApi Whether token to be generaed will use https://Mintable.app Api
+ */
+/**
+ * @typedef {object} tansactionEvents
+ * Object containing events to be called upon events emissions from an ethereum transaction.
+ * @property {function=} onData Function to be called if the `data` event is triggerred
+ * @property {function=} onChanged Function to be called if the `change` event is triggerred
+ * @property {function=} onTransactionHash Function to be called if the `transactionHash` event is triggerred
+ * @property {function=} onReceipt Function to be called if the `receipt` event is triggerred
+ * @property {function=} onConfirmation Function to be called if the `confirmation` event is triggerred
+ * @property {function=} onError Function to be called if the `event` event is triggerred
  */
 
  /**
@@ -329,7 +340,7 @@ class MintableCreate {
     /**
      * Create the base type of ERC721 with metadata only in the smart contract. To use metadata, the https://mintable.app Api is required.
      * @param {tansactionDetails} contractDetails Object containing required fields for the contract creation
-     * @param {otbjec} events Object containing transaction events: 
+     * @param {tansactionEvents} events Object containing transaction events: 
      */
     async createERC721Metadata (contractDetails={},  { onTransactionHash, onReceipt, onError } = {}) {
         try {
@@ -369,7 +380,7 @@ class MintableCreate {
     /**
      * Create the base type of ERC721 with no metadata in the smart contract. To use metadata, the https://mintable.app Api is required.
      * @param {tansactionDetails} contractDetails Object containing required fields for the contract creation
-     * @param {object} events Object containing transaction events: 
+     * @param {tansactionEvents} events Object containing transaction events: 
      */
     async createERC721 (contractDetails={}, { onTransactionHash, onReceipt, onError } = {}) {
         try {
