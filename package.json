@@ -9,5 +9,8 @@
   },
   "devDependencies": {
     "jsdoc": "^3.6.2"
+  },
+  "scripts": {
+    "build-docs": "jsdoc ./README.md src/**"
   }
 }
