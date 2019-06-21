@@ -74,7 +74,11 @@ class State {
   * Mintable create class. Handles interfacing between the sdk and external components
   */
 class MintableCreate {
-
+    /**
+     * @param {string} apiKey 
+     * @param {object=} provider 
+     * @param {function=} jwtFetcher 
+     */
     constructor (apiKey, provider, jwtFetcher) {
         if (!provider) {
             provider = window.ethereum || (window.web3 && window.web3.givenProvider) || (window.web3 && window.web3.currentProvider) ;
@@ -93,30 +97,37 @@ class MintableCreate {
         state.jwtFetcher = jwtFetcher;
     }
 
+    /**Get the network Id of the network the Sdk is connected to */
     get activeNetwork () {
         return state.activeNetwork;
     }
 
+    /**Return the Api key used to instantiate the Sdk */
     get apiKey () {
         return state.apiKey;
     }
 
+    /**Returns the Instance of the generator contract been used by the Sdk */
     get deployerContract () {
         return state.generatorContract;
     }
 
+    /**Returns the instance of the Batch mint generator been used by the Sdk */
     get batchDeployerContract () {
         return state.batchGeneratorContract;
     }
 
+    /**Returns the mapping of errors and their explanations */
     get errors () {
         return errors;
     }
 
+    /**Whether the Sdk is loaded and ready */
     get loaded () {
         return state.loaded;
     }
 
+    /**Returns the instance of Web 3 been used by the Sdk */
     get web3 () {
         return state.web3;
     }
