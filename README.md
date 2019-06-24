@@ -7,9 +7,16 @@ Use the SDK to create anything as a ERC-721 easily. No smart contracts needed.
     
 ```
 import MintableCreate from 'mintable-create-sdk';
+
 ...
+
 const mintable = new MintableCreate();
-await mintable.init();
+
+//apiKey: Key provided by https://mintable.app
+//provider: (optional) Preferred web3 provider
+//jwtFetcher: (optional) Function which returns a JWT to access http://mintable.app servers when called
+
+await mintable.init(apiKey, ?provider, ?jwtFetcher);
 
 console.log(mintable.loaded);
 

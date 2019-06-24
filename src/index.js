@@ -4,6 +4,19 @@ import { addressUtils, apiUtils, web3Utils } from './utils';
 
 let state;
 
+/**
+ * Storage for state of the Api and connection to both Web3 and https://mintable.app
+ * @protected
+ * @property {object[]} abis Array of all Abi objects retrieved after verification
+ * @property {string} apiKey Api key used to access the sdk, provided by https://mintable.app
+ * @property {string} activeNetwork Present network the sdk is connected to through the provided Web3 provider
+ * @property {bool} loaded Whether all components needed to use the Api are fully loaded and the sdk ready to make calls
+ * @property {object} provider The Web3 provider used to instantiate the sdk. Same as provided to init function if provided, else extracted by the sdk
+ * @property {object} web3 Instance of Web3 being usd by the Sdk
+ * @property {object} generatorContract Instance of the Generator contract being used by the sdk
+ * @property {object} batchGeneratorContract Instance of the batchMint Generator contract being used by the Sdk
+ * @property {function=} jwtFetcher Function used to fetch the JWT used to interact with https://mintable.app servers
+ */
 class State {
     constructor () {
         this.abis = [];
@@ -19,8 +32,60 @@ class State {
     }
 };
 
-class MintableCreate {
+/**
+ * @typedef {string} from New contract creator
+ */
+/**
+ * @typedef {string} name Name of the token to be generated
+ */
+/**
+ * @typedef {string} symbol Symbol of the token to be generated
+ */
+/**
+ * @typedef {string} uri Uri referrence for the first token of the new Token to be generated
+ */
+/**
+ * @typedef {string[] | object[]} metadata An array of string or key-value pair object referring to the details for the initial token to be generated.
+ */
+/**
+ * @typedef {bool} useApi Whether token to be generaed will use https://Mintable.app Api
+ */
+/**
+ * @typedef {object} tansactionDetails
+ * Object containing properties required to complete a mintable create transaction
+ * @property {from} from New contract creator
+ * @property {name} name Name of the token to be generated
+ * @property {symbol} symbol Symbol of the token to be generated
+ * @property {uri} uri Uri referrence for the first token of the new Token to be generated
+ * @property {metadata=} metadata An array of string or key-value pair object referring to the details for the initial token to be generated.
+ * @property {useApi=} useApi Whether token to be generaed will use https://Mintable.app Api
+ */
+/**
+ * @typedef {object} tansactionEvents
+ * Object containing events to be called upon events emissions from an ethereum transaction.
+ * @property {function=} onData Function to be called if the `data` event is triggerred
+ * @property {function=} onChanged Function to be called if the `change` event is triggerred
+ * @property {function=} onTransactionHash Function to be called if the `transactionHash` event is triggerred
+ * @property {function=} onReceipt Function to be called if the `receipt` event is triggerred
+ * @property {function=} onConfirmation Function to be called if the `confirmation` event is triggerred
+ * @property {function=} onError Function to be called if the `event` event is triggerred
+ */
 
+ /**
+ * @typedef {object} initParams
+ * Object containing parameters to be used to initialize th Sdk.
+ * @property {object=} assistInstance Instance of the bnc/assist package, which is a UI utility to improve UX of any Web3 function (https://github.com/blocknative/assist).
+ */
+
+ /**
+  * Mintable create class. Handles interfacing between the sdk and external components
+  */
+class MintableCreate {
+    /**
+     * @param {string} apiKey The Api key used to instantiate the Sdk
+     * @param {object=} provider The Web3 provider used to instantiate the sdk.
+     * @param {function=} jwtFetcher Function called to retreive a current Jwt.
+     */
     constructor (apiKey, provider, jwtFetcher) {
         if (!provider) {
             provider = window.ethereum || (window.web3 && window.web3.givenProvider) || (window.web3 && window.web3.currentProvider) ;
@@ -39,58 +104,77 @@ class MintableCreate {
         state.jwtFetcher = jwtFetcher;
     }
 
+    /**Get the network Id of the network the Sdk is connected to */
     get activeNetwork () {
         return state.activeNetwork;
     }
 
+    /**Return the Api key used to instantiate the Sdk */
     get apiKey () {
         return state.apiKey;
     }
 
+    /**Returns the Instance of the generator contract been used by the Sdk */
     get deployerContract () {
         return state.generatorContract;
     }
 
+    /**Returns the instance of the Batch mint generator been used by the Sdk */
     get batchDeployerContract () {
         return state.batchGeneratorContract;
     }
 
+    /**Returns the mapping of errors and their explanations */
     get errors () {
         return errors;
     }
 
+    /**Whether the Sdk is loaded and ready */
     get loaded () {
         return state.loaded;
     }
 
+    /**Returns the instance of Web 3 been used by the Sdk */
     get web3 () {
         return state.web3;
     }
 
+    /**Throws if the sdk is not instantiatied, and loaded */
     requireLoadedSDK () {
         if (!this.loaded) {
             throw new Error(errors.SDK_NOT_LOADED);
         }
     }
 
+    /**Throws uf the Generator contract is not loaded */
     requireLoadedGenerator () {
         if (!this.deployerContract) {
             throw new Error(errors.SDK_NOT_LOADED);
         }
     }
 
+    /**Throws if the Batch mint genrator is not loaded */
     requireLoadedBatchMintGenerator () {
         if (!this.batchDeployerContract) {
             throw new Error(errors.SDK_NOT_LOADED);
         }
     }
 
+    /**Throws if the passed number is not a valid batchMint value
+     * @param {number} batchMint The batchMint value (Maximum number of tokens tha can be batchMinted on the new contract)
+     */
     requireValidBatchMint (batchMint) {
         if (!batchMints.includes(Number(batchMint)) || Number(batchMint) === 0) {
             throw new Error(errors.INVALID_CONTRACT_BATCHMINT);
         }
     }
 
+    /**Carry out house cleaning on transctions generated by the Sdk
+     * @param {object} tx Returned transaction object from making an ethereum transaction
+     * @param {tansactionDetails} requestObject Object containing required fields used for the contract creation
+     * @param {tansactionEvents} events Object containing transaction events: 
+     * @returns {object} Returned transaction object from making an ethereum transaction after hoouse cleaning
+     */
     resolveWeb3TxEvent (tx, requestObject, { onTransactionHash, onChanged, onReceipt, onError }) {
         const noEventsSet = !onTransactionHash && !onChanged && !onReceipt && !onError;
         const events = Object.assign( {}, { onTransactionHash, onChanged, onReceipt, onError }, {
@@ -128,6 +212,9 @@ class MintableCreate {
         }
     }
 
+    /**Initialize the Sdk, and make ready to call functions
+     * @param {initParams=} params Object containing variables, which would be used to initialize the Sdk.
+     */
     async init ({ assistInstance } = {}) {
         try {
             if (state.loaded) {
@@ -148,6 +235,10 @@ class MintableCreate {
         }
     }
 
+
+    /**Convenience function. Fetches the total number of created contracts by the generator contract
+     * @returns {number} The total number of contracts generated by the Instantiated generator
+     */
     async fetchTotalCreatedContracts () {
         try {
             this.requireLoadedSDK();
@@ -159,7 +250,13 @@ class MintableCreate {
         }
     }
 
-    async priceCreateERC721BatchMintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], batchMint = 0, useApi=false }) {
+    /**
+     * Check the price to create the batch Mintable ERC721 which does not have any metadata in the smart contract.
+     * @param {tansactionDetails} contractDetails Object containing required fields for the contract creation
+     * @param {object=} events Place holder to match the function signature of the actual create function
+     * @returns {object} The Response object with the status and price details if available
+     */
+    async priceCreateERC721BatchMintable ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], batchMint = 0, useApi=false }, {}) {
         try {
             this.requireLoadedSDK();
             from = web3Utils.resolveFrom.bind(state)(from);
@@ -189,7 +286,13 @@ class MintableCreate {
         }
     }
 
-    async priceCreateERC721Metadata ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], useApi=false  }={}) {
+    /**
+     * Check the price to create the base type of ERC721 with metadata only in the smart contract.
+     * @param {tansactionDetails} contractDetails Object containing required fields for the contract creation
+     * @param {object=} events Place holder to match the function signature of the actual create function
+     * @returns {object} The Response object with the status and price details if available
+     */
+    async priceCreateERC721Metadata ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], useApi=false  }={}, {}) {
         try {
             this.requireLoadedSDK();
             from = web3Utils.resolveFrom.bind(state)(from);
@@ -219,7 +322,13 @@ class MintableCreate {
         }
     }
 
-    async priceCreateERC721 ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], useApi=false }={}, { onTransactionHash, onReceipt, onError } = {}) {
+    /**
+     * Check the price to create the base type of ERC721 with no metadata in the smart contract.
+     * @param {tansactionDetails} contractDetails Object containing required fields for the contract creation
+     * @param {object=} events Place holder to match the function signature of the actual create function
+     * @returns {object} The Response object with the status and price details if available
+     */
+    async priceCreateERC721 ({ from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], useApi=false }={}, {}) {
         try {
             this.requireLoadedSDK();
             from = web3Utils.resolveFrom.bind(state)(from);
@@ -246,6 +355,12 @@ class MintableCreate {
         }
     }
 
+    /**
+     * Create the batch Mintable ERC721. Does not have any metadata in the smart contract. To use metadata, the https://mintable.app Api is required.
+     * @param {tansactionDetails} contractDetails Object containing required fields for the contract creation
+     * @param {tansactionEvents} events Object containing transaction events
+     * @returns {object} The object returned from the ethereum transactions if events is passed, else a Response object with the status and receipt if available
+     */
     async createERC721BatchMintable (contractDetails={},  { onTransactionHash, onReceipt, onError } = {}) {
         try {
             this.requireLoadedSDK() && this.requireLoadedBatchMintGenerator();
@@ -283,6 +398,12 @@ class MintableCreate {
         }
     }
 
+    /**
+     * Create the base type of ERC721 with metadata only in the smart contract.
+     * @param {tansactionDetails} contractDetails Object containing required fields for the contract creation
+     * @param {tansactionEvents} events Object containing transaction events
+     * @returns {object} The object returned from the ethereum transactions if events is passed, else a Response object with the status and receipt if available
+     */
     async createERC721Metadata (contractDetails={},  { onTransactionHash, onReceipt, onError } = {}) {
         try {
             this.requireLoadedSDK() && this.requireLoadedGenerator();
@@ -318,6 +439,12 @@ class MintableCreate {
         }
     }
 
+    /**
+     * Create the base type of ERC721 without metadata in the smart contract. To use metadata, the https://mintable.app Api is required.
+     * @param {tansactionDetails} contractDetails Object containing required fields for the contract creation
+     * @param {tansactionEvents} events Object containing transaction events
+     * @returns {object} The object returned from the ethereum transactions if events is passed, else a Response object with the status and receipt if available
+     */
     async createERC721 (contractDetails={}, { onTransactionHash, onReceipt, onError } = {}) {
         try {
             this.requireLoadedSDK() && this.requireLoadedGenerator();
@@ -327,13 +454,16 @@ class MintableCreate {
             if ( !(addressUtils.exists(from) && addressUtils.isValid(state.web3, from)) ) {
                 throw new Error(errors.INVALID_SENDER);
             }
-            const usesApi = useApi || metadata && metadata.length > 0 || uri.includes(constants.API_URL);
+
+            metadata = metadata ? metadata : [];
+            const usesApi = useApi || metadata && metadata.length > 0 || uri.includes(constants.API_URL)
             let apiRef = {};
 
             if (useApi) {
                 apiRef = apiUtils.generateApiReference();
                 uri = apiRef.uri;
             }
+
             const tx = {
                 from,
                 name,

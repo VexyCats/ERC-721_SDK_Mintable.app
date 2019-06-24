@@ -1,3 +1,8 @@
+/**
+ * @module config/errors
+ */
+
+ /** Export various Error messages definitions using the Sdk */
 export default {
     'INVALID_API_KEY': 'Either you have not provided an Api key, or the provided Api key is invalid',
     'INVALID_PROVIDER': 'Either you are not on an Ethereum enable browser, or the provider is invalid',

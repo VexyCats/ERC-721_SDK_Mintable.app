@@ -12,7 +12,11 @@
     Storage: 0x37d3c531d76958579e044d2052a5929ed206c85f
     donation721: 0x0c44b42dcce3d2895ca11ce2e4a7fb4aa8888cf8
 */
+/**
+ * @module config/batchAddresses
+ */
 
+ /** Exports addresses of https://mintable.app batch mintable contracts on different chains  */
 export default {
     1: '0x89d6d4997ff83a8313739c9afeaf5a70f4acb1b1',
     4: '0x73b3a1b17a6d4cc67324f34d5d272f58e7ee8ab8'
