@@ -440,7 +440,7 @@ class MintableCreate {
     }
 
     /**
-     * Create the base type of ERC721 with no metadata in the smart contract. To use metadata, the https://mintable.app Api is required.
+     * Create the base type of ERC721 without metadata in the smart contract. To use metadata, the https://mintable.app Api is required.
      * @param {tansactionDetails} contractDetails Object containing required fields for the contract creation
      * @param {tansactionEvents} events Object containing transaction events
      * @returns {object} The object returned from the ethereum transactions if events is passed, else a Response object with the status and receipt if available
@@ -448,15 +448,15 @@ class MintableCreate {
     async createERC721 (contractDetails={}, { onTransactionHash, onReceipt, onError } = {}) {
         try {
             this.requireLoadedSDK() && this.requireLoadedGenerator();
-            let { from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, useApi=false } = contractDetails;
+            let { from=constants.NULL_ADDRESS_HEX, name=constants.NULL_STRING ,symbol= constants.NULL_STRING,uri=constants.NULL_STRING, metadata = [], useApi=false } = contractDetails;
             from = web3Utils.resolveFrom.bind(state)(from);
 
             if ( !(addressUtils.exists(from) && addressUtils.isValid(state.web3, from)) ) {
                 throw new Error(errors.INVALID_SENDER);
             }
 
-            const metadata = []
-            const usesApi = useApi || uri.includes(constants.API_URL);
+            metadata = metadata ? metadata : [];
+            const usesApi = useApi || metadata && metadata.length > 0 || uri.includes(constants.API_URL)
             let apiRef = {};
 
             if (useApi) {
