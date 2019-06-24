@@ -28,6 +28,7 @@ class State {
         this.generatorContract = null;
         this.batchGeneratorContract = null;
         this.jwtFetcher = null;
+        this.assistInstance = null;
     }
 };
 
@@ -193,7 +194,7 @@ class MintableCreate {
         }
     }
 
-    async init () {
+    async init ({ assistInstance } = {}) {
         try {
             if (state.loaded) {
                 return state.loaded;
@@ -202,6 +203,7 @@ class MintableCreate {
                 throw new Error(errors.SDK_LOADING);
             }
             state.loading = true;
+            state.assistInstance = assistInstance;
             await apiUtils.validateApiKey(state, state.apiKey);
             await web3Utils.loadWeb3.bind(state)();
             state.loaded = true;
